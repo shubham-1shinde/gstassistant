@@ -50,7 +50,7 @@ const createInvoice = asyncHandler(async (req, res) => {
     paymentStatus,
   } = req.body;
 
-  console.log("Received Invoice Data:", req.body);
+  //console.log("Received Invoice Data:", req.body);
 
   // ── Validation ────────────────────────────────────────────────────────────
   if (
