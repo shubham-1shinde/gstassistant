@@ -66,10 +66,10 @@ const itcRates = (d) =>
 
 // ─── Metric Card ─────────────────────────────────────────────────────────────
 const CARD_STYLES = {
-  sales:  { accent: "bg-blue-500",   badge: "bg-blue-50 text-blue-700",   icon: "💼" },
-  output: { accent: "bg-violet-500", badge: "bg-violet-50 text-violet-700", icon: "📤" },
-  itc:    { accent: "bg-teal-500",   badge: "bg-teal-50 text-teal-700",   icon: "📥" },
-  net:    { accent: "bg-orange-500", badge: "bg-orange-50 text-orange-700", icon: "💰" },
+  sales:  { accent: "bg-blue-500",   badge: "bg-blue-50 text-blue-700",   icon: "" },
+  output: { accent: "bg-violet-500", badge: "bg-violet-50 text-violet-700", icon: "" },
+  itc:    { accent: "bg-teal-500",   badge: "bg-teal-50 text-teal-700",   icon: "" },
+  net:    { accent: "bg-orange-500", badge: "bg-orange-50 text-orange-700", icon: "" },
 };
 
 function MetricCard({ label, value, trend, trendUp, type, animVal }) {

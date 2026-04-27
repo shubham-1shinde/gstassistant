@@ -17,6 +17,7 @@ import GSTSummary from './pages/GSTSummary.jsx';
 import ComplienceCalender from './pages/ComplienceCalender.jsx';
 import SelectBusiness from './pages/SelectBusiness.jsx';
 import TaxBot from './pages/TaxBot.jsx';
+import ContactAccountant from './pages/ContactAccountant.jsx';
 
 const router = createBrowserRouter([
 
@@ -75,6 +76,12 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/contact-accountant",
+        element: (
+          <ContactAccountant />
+        ),
+      },
+      {
         path: "/taxbot",
         element: (
           <TaxBot />
@@ -84,7 +91,7 @@ const router = createBrowserRouter([
   }
 ])
 
-`ReactDOM`.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
    <Provider store={store}>
       <PersistGate loading={<div>Loading...</div>} persistor={persistor}>

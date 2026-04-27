@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { FaChartBar, FaFileInvoice, FaShoppingCart, FaCalendarAlt, FaRobot  } from "react-icons/fa";
+import { FaChartBar, FaFileInvoice, FaShoppingCart, FaCalendarAlt, FaRobot, FaUserTie  } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { Building2 } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -14,12 +14,13 @@ function Sidebar() {
     { to: "/itc-tracker", icon: <FaChartBar />, label: "ITC Tracker" },
     { to: "/gst-summary", icon: <FaChartBar />, label: "GST Summary" },
     { to: "/compliance", icon: <FaCalendarAlt />, label: "Compliance Calendar" },
+    { to: "/contact-accountant", icon: <FaUserTie />, label: "Contact Accountant" },
     { to: "/taxbot", icon: <FaRobot  />, label: "Tax Bot" },
   ];
 
   const businessData = useSelector((state) => state.business.businessData);
   const userData = useSelector((state) => state.auth.userData);
-  //console.log("Sidebar businessData", businessData);
+  console.log("Sidebar businessData", businessData);
 
 
   return (

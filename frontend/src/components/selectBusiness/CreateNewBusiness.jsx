@@ -48,43 +48,13 @@ function CreateNewBusiness({ isOpen, onClose, onAdd }) {
 
 
   const states = [
-    "ANDHRA PRADESH",
-    "ARUNACHAL PRADESH",
-    "ASSAM",
-    "BIHAR",
-    "CHHATTISGARH",
-    "GOA",
-    "GUJARAT",
-    "HARYANA",
-    "HIMACHAL PRADESH",
-    "JHARKHAND",
-    "KARNATAKA",
-    "KERALA",
-    "MADHYA PRADESH",
-    "MAHARASHTRA",
-    "MANIPUR",
-    "MEGHALAYA",
-    "MIZORAM",
-    "NAGALAND",
-    "ODISHA",
-    "PUNJAB",
-    "RAJASTHAN",
-    "SIKKIM",
-    "TAMIL NADU",
-    "TELANGANA",
-    "TRIPURA",
-    "UTTAR PRADESH",
-    "UTTARAKHAND",
-    "WEST BENGAL",
-    "ANDAMAN AND NICOBAR ISLANDS",
-    "CHANDIGARH",
-    "DADRA AND NAGAR HAVELI AND DAMAN AND DIU",
-    "DELHI",
-    "JAMMU AND KASHMIR",
-    "LADAKH",
-    "LAKSHADWEEP",
-    "PUDUCHERRY"
-  ];
+    "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
+    "Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka",
+    "Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram",
+    "Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana",
+    "Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi",
+    "Jammu & Kashmir","Ladakh","Puducherry","Chandigarh",
+  ]
   
 
   return (
