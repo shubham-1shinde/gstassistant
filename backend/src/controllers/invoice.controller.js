@@ -93,17 +93,12 @@ const createInvoice = asyncHandler(async (req, res) => {
 
   // ── Date formatting (your original logic) ────────────────────────────────
   const date          = new Date(invoiceDate);
-  const formattedDate = date.toLocaleDateString("en-IN", {
-    day:   "2-digit",
-    month: "2-digit",
-    year:  "numeric",
-  });
 
   // ── Create ────────────────────────────────────────────────────────────────
   const newInvoice = await Invoice.create({
     // existing
     invoiceNumber,
-    invoiceDate:   formattedDate,
+    invoiceDate:   date,
     gstRate:       gstRateNum,
     businessId,
 
@@ -145,7 +140,8 @@ const createInvoice = asyncHandler(async (req, res) => {
 
 // ── Get All Invoices ──────────────────────────────────────────────────────────
 const getInvoices = asyncHandler(async (req, res) => {
-  const { businessId } = req.body;
+  const { businessId } = req.params;
+  //console.log("Fetching invoices for businessId:", businessId);
 
   if (!businessId) {
     throw new ApiError(400, "businessId is required");

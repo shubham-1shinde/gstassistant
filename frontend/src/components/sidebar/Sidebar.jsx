@@ -20,7 +20,7 @@ function Sidebar() {
 
   const businessData = useSelector((state) => state.business.businessData);
   const userData = useSelector((state) => state.auth.userData);
-  console.log("Sidebar businessData", businessData);
+  //console.log("Sidebar businessData", businessData);
 
 
   return (

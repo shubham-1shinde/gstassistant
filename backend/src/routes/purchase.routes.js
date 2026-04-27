@@ -10,6 +10,6 @@ const router = Router()
 router.use(verifyJWT);
 
 router.route("/create-purchase").post(createPurchase)
-router.route("/get-purchases").post(getPurchases)
+router.route("/get-purchases/:businessId").get(getPurchases)
 
 export default router

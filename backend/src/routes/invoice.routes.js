@@ -10,6 +10,6 @@ const router = Router()
 router.use(verifyJWT);
 
 router.route("/create-invoice").post(createInvoice)
-router.route("/get-invoices").post(getInvoices)
+router.route("/get-invoices/:businessId").get(getInvoices)
 
 export default router

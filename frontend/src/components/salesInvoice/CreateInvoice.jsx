@@ -67,8 +67,8 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
   if (!isOpen) return null;
 
   // ── log only when modal is open ───────────────────────────────────────────
-  console.log("customerState →", form.customerState);
-  console.log("transactionType →", transactionType);
+  //console.log("customerState →", form.customerState);
+  //console.log("transactionType →", transactionType);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

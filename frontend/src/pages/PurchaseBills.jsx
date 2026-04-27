@@ -19,7 +19,7 @@ export default function PurchaseBills() {
     };
     await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/purchase/create-purchase`, payload)
     .then((response) => {
-      console.log("Purchase bill created successfully:", response.data);
+      //console.log("Purchase bill created successfully:", response.data);
       setBills(prev => [response.data.data, ...prev]);
     });
   };
@@ -28,8 +28,8 @@ export default function PurchaseBills() {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/purchase/get-purchases`, { businessId: businessData._id });
-      console.log("Fetched Purchases:", response.data);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/v1/purchase/get-purchases/${businessData._id}`);
+      //console.log("Fetched Purchases:", response.data);
       setBills(response.data.data || []);
     } catch (error) {
       console.error('Error fetching purchases:', error);
@@ -94,9 +94,15 @@ export default function PurchaseBills() {
                 {bills.map((bill) => (
                   <tr key={bill.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-800">{bill.vendorName}</td>
-                    <td className="px-6 py-4 text-slate-500 font-mono text-xs">{bill.vendorGSTIN}</td>
+                    <td className="px-6 py-4 text-slate-500 font-mono text-xs">{bill.vendorGstin}</td>
                     <td className="px-6 py-4 text-slate-600">{bill.invoiceNumber}</td>
-                    <td className="px-6 py-4 text-slate-500">{bill.purchaseDate}</td>
+                   <td className="px-6 py-4 text-slate-500">
+                      {new Date(bill.purchaseDate).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "2-digit",
+                      })}
+                    </td>
                     <td className="px-6 py-4 text-right text-slate-700">₹{Number(bill.totalAmount).toLocaleString("en-IN")}</td>
                     <td className="px-6 py-4 text-right text-green-600 font-semibold">{bill.gstRate}</td>
                   </tr>

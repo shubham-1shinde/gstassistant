@@ -21,11 +21,11 @@ const handleAdd = async (invoice) => {
 
   setOpenModal(false);
 
-  console.log("New Invoice Added:", payload);
+  //console.log("New Invoice Added:", payload);
 
   const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/invoice/create-invoice`, payload)
   .then((response) => {
-    console.log("Invoice created successfully:", response.data);
+    //console.log("Invoice created successfully:", response.data);
     setInvoices(prev => [response.data.data, ...prev]);
   });
     
@@ -35,8 +35,8 @@ const handleAdd = async (invoice) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/invoice/get-invoices`, { businessId: businessData._id });
-      console.log("Fetched Invoices:", response.data);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/v1/invoice/get-invoices/${businessData._id}`);
+      //console.log("Fetched Invoices:", response.data);
       setInvoices(response.data.data || []);
     } catch (error) {
       console.error('Error fetching invoices:', error);
@@ -124,7 +124,11 @@ const handleAdd = async (invoice) => {
                 {invoices.map((inv) => (
                   <tr key={inv.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 font-medium text-gray-800">{inv.invoiceNumber}</td>
-                    <td className="px-6 py-4 text-gray-500">{inv.invoiceDate}</td>
+                    <td className="px-6 py-4 text-gray-500">{new Date(inv.invoiceDate).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "2-digit",
+                      })}</td>
                     <td className="px-6 py-4 text-right text-gray-700">₹{Number(inv.totalAmount).toLocaleString("en-IN")}</td>
                     <td className="px-6 py-4 text-right text-blue-600 font-semibold">{inv.gstRate}</td>
                   </tr>

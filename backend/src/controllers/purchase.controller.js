@@ -54,7 +54,7 @@ const createPurchase = asyncHandler(async (req, res) => {
     paymentStatus,
   } = req.body;
 
-  console.log("Received purchase data:", req.body); // your original log
+  //console.log("Received purchase data:", req.body); // your original log
 
   // ── Validation (your original fields first, then new) ────────────────────
   if (
@@ -162,7 +162,8 @@ const createPurchase = asyncHandler(async (req, res) => {
 
 // ── Get All Purchases ─────────────────────────────────────────────────────────
 const getPurchases = asyncHandler(async (req, res) => {
-  const { businessId } = req.body;
+  const { businessId } = req.params;
+  //console.log("Received businessId for fetching purchases:", businessId); // log to verify
 
   if (!businessId) {
     throw new ApiError(400, "businessId is required");

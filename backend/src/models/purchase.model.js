@@ -1,4 +1,4 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const purchaseSchema = new Schema(
   {
@@ -6,7 +6,6 @@ const purchaseSchema = new Schema(
     invoiceNumber: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
     },
     purchaseDate: {
@@ -34,7 +33,7 @@ const purchaseSchema = new Schema(
       type: String,
       trim: true,
       uppercase: true,
-      default: null,          // null for unregistered vendors
+      default: null, // optional
     },
     vendorState: {
       type: String,
@@ -42,7 +41,7 @@ const purchaseSchema = new Schema(
       trim: true,
     },
 
-    // ── Item / Line Info ─────────────────────────────────────────
+    // ── Item Info ────────────────────────────────────────────────
     itemDescription: {
       type: String,
       required: true,
@@ -69,52 +68,38 @@ const purchaseSchema = new Schema(
       min: 0,
     },
 
-    // ── GST Breakdown ────────────────────────────────────────────
+    // ── GST ──────────────────────────────────────────────────────
     gstRate: {
-      type: Number,           // 0, 3, 5, 12, 18, 28
+      type: Number,
       required: true,
       enum: [0, 3, 5, 12, 18, 28],
       default: 18,
     },
-    cgst: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    sgst: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    igst: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
+    cgst: { type: Number, default: 0, min: 0 },
+    sgst: { type: Number, default: 0, min: 0 },
+    igst: { type: Number, default: 0, min: 0 },
+
     totalGST: {
       type: Number,
       required: true,
       min: 0,
     },
-    totalAmount: {            // taxableAmount + totalGST (bill_total)
+    totalAmount: {
       type: Number,
       required: true,
       min: 0,
     },
 
-    // ── ITC (Input Tax Credit) ───────────────────────────────────
+    // ── ITC ──────────────────────────────────────────────────────
     itcEligible: {
       type: Boolean,
       required: true,
       default: true,
-        // false for: diesel, alcohol, personal-use items,
-        // blocked credits under Section 17(5)
     },
     itcClaimed: {
       type: Number,
       default: 0,
       min: 0,
-        // = totalGST if itcEligible, else 0
     },
     itcStatus: {
       type: String,
@@ -122,7 +107,7 @@ const purchaseSchema = new Schema(
       default: "unclaimed",
     },
 
-    // ── Supply & Transaction Info ────────────────────────────────
+    // ── Transaction ──────────────────────────────────────────────
     placeOfSupply: {
       type: String,
       trim: true,
@@ -133,7 +118,6 @@ const purchaseSchema = new Schema(
       enum: ["intrastate", "interstate"],
     },
 
-    // ── Status ───────────────────────────────────────────────────
     paymentStatus: {
       type: String,
       required: true,
@@ -141,43 +125,54 @@ const purchaseSchema = new Schema(
       default: "pending",
     },
 
-    // ── Business Reference ───────────────────────────────────────
+    // ── Business ─────────────────────────────────────────────────
     businessId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Business",
       required: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// ── Indexes for fast dashboard queries ───────────────────────────────────────
+
+// ── ✅ FIXED INDEXES ─────────────────────────────────────────────
+
+// invoiceNumber unique per business
+purchaseSchema.index(
+  { invoiceNumber: 1, businessId: 1 },
+  { unique: true }
+);
+
+// vendor GSTIN unique per business (allows null)
+purchaseSchema.index(
+  { vendorGstin: 1, businessId: 1 },
+  { unique: true, sparse: true }
+);
+
+// Other indexes
 purchaseSchema.index({ businessId: 1, month: 1 });
 purchaseSchema.index({ businessId: 1, financialYear: 1 });
 purchaseSchema.index({ businessId: 1, itcEligible: 1 });
 purchaseSchema.index({ businessId: 1, itcStatus: 1 });
 purchaseSchema.index({ businessId: 1, paymentStatus: 1 });
-purchaseSchema.index({ invoiceNumber: 1, businessId: 1 });
 
-// ── Virtual: GST rate as string (e.g. "18%") ─────────────────────────────────
+
+// ── Virtuals ────────────────────────────────────────────────────
 purchaseSchema.virtual("gstRateLabel").get(function () {
   return this.gstRate + "%";
 });
 
-// ── Virtual: ITC yet to be claimed ───────────────────────────────────────────
 purchaseSchema.virtual("itcPending").get(function () {
   if (!this.itcEligible) return 0;
   return this.itcStatus === "claimed" ? 0 : this.itcClaimed;
 });
 
-// ── Pre-save: auto-calculate totals & ITC ────────────────────────────────────
+
+// ── Pre-save ────────────────────────────────────────────────────
 purchaseSchema.pre("save", function (next) {
-  // Step 1 — taxable amount from quantity × unit price
   this.taxableAmount = this.quantity * this.unitPrice;
 
-  // Step 2 — GST split based on transaction type
   const gstAmount = (this.taxableAmount * this.gstRate) / 100;
 
   if (this.transactionType === "intrastate") {
@@ -190,14 +185,11 @@ purchaseSchema.pre("save", function (next) {
     this.igst = gstAmount;
   }
 
-  this.totalGST    = gstAmount;
+  this.totalGST = gstAmount;
   this.totalAmount = this.taxableAmount + this.totalGST;
 
-  // Step 3 — ITC: only eligible bills get credit
-  // Ineligible examples: diesel (2710), alcohol, electricity (2716)
   this.itcClaimed = this.itcEligible ? this.totalGST : 0;
 
-  // Step 4 — auto-set itcStatus if ineligible
   if (!this.itcEligible) {
     this.itcStatus = "ineligible";
   }
@@ -205,63 +197,4 @@ purchaseSchema.pre("save", function (next) {
   next();
 });
 
-// ── Static: monthly ITC summary for dashboard ─────────────────────────────────
-purchaseSchema.statics.getMonthlySummary = async function (businessId, financialYear) {
-  return this.aggregate([
-    {
-      $match: {
-        businessId: new mongoose.Types.ObjectId(businessId),
-        financialYear,
-        paymentStatus: { $ne: "cancelled" },
-      },
-    },
-    {
-      $group: {
-        _id: "$month",
-        totalPurchases: { $sum: "$taxableAmount" },
-        totalGSTPaid:   { $sum: "$totalGST" },
-        inputITC:       { $sum: "$itcClaimed" },   // only eligible ITC
-        totalCGST:      { $sum: "$cgst" },
-        totalSGST:      { $sum: "$sgst" },
-        totalIGST:      { $sum: "$igst" },
-        billCount:      { $sum: 1 },
-        ineligibleGST: {
-          $sum: {
-            $cond: [{ $eq: ["$itcEligible", false] }, "$totalGST", 0],
-          },
-        },
-      },
-    },
-    { $sort: { _id: 1 } },
-  ]);
-};
-
-// ── Static: combined dashboard summary (sales + purchases together) ───────────
-purchaseSchema.statics.getDashboardData = async function (businessId, financialYear) {
-  const SalesInvoice = mongoose.model("SalesInvoice");
-
-  const [salesData, purchaseData] = await Promise.all([
-    SalesInvoice.getMonthlySummary(businessId, financialYear),
-    this.getMonthlySummary(businessId, financialYear),
-  ]);
-
-  const MONTHS = ["Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar"];
-
-  // Index both by month name for easy lookup
-  const salesMap    = Object.fromEntries(salesData.map((r) => [r._id, r]));
-  const purchaseMap = Object.fromEntries(purchaseData.map((r) => [r._id, r]));
-
-  return {
-    months:        MONTHS,
-    totalSales:    MONTHS.map((m) => salesMap[m]?.totalSales  ?? 0),
-    outputGst:     MONTHS.map((m) => salesMap[m]?.outputGst   ?? 0),
-    inputItc:      MONTHS.map((m) => purchaseMap[m]?.inputITC ?? 0),
-    netGstPayable: MONTHS.map((m) => {
-      const output = salesMap[m]?.outputGst   ?? 0;
-      const itc    = purchaseMap[m]?.inputITC ?? 0;
-      return Math.max(0, output - itc);   // net can't be negative
-    }),
-  };
-};
-
-export const Purchase = mongoose.model("Purchase", purchaseSchema)
+export const Purchase = mongoose.model("Purchase", purchaseSchema);

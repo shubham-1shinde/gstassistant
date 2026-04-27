@@ -25,6 +25,7 @@ import businessRouter from './routes/business.routes.js'
 import invoiceRouter from './routes/invoice.routes.js'
 import purchaseRouter from './routes/purchase.routes.js'
 import dashboardRouter from './routes/dashboard.routes.js'
+import complienceRouter from './routes/complience.route.js'
 
 //routes declaration
 app.use("/api/v1/users", userRouter)
@@ -32,6 +33,7 @@ app.use("/api/v1/business", businessRouter)
 app.use("/api/v1/invoice", invoiceRouter)
 app.use("/api/v1/purchase", purchaseRouter)
 app.use("/api/v1/dashboard", dashboardRouter)
+app.use("/api/v1/complience", complienceRouter)
 
 // http://localhost:8000/api/v1/users/register
 

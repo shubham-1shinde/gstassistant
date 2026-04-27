@@ -13,7 +13,7 @@ export default function Dashboard() {
   const fetchNumericValues = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/dashboard/get-numerical-values`, { businessId: businessData._id });
-          console.log("business", businessData);
+          //console.log("business", businessData);
           setValues(response.data);
         } catch (error) {
           console.error('Error fetching numerical values:', error);

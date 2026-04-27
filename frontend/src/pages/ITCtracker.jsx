@@ -1,8 +1,79 @@
 import React from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { PiggyBank, TrendingUp, AlertCircle } from "lucide-react";
 
-function ITCTracker({ purchases = [] }) {
-  const totalITC = purchases.reduce((sum, p) => sum + (Number(p.gstPaid) || 0), 0);
+function ITCTracker() {
+
+  /*const purchases = [
+  {
+    id: 1,
+    vendorName: "ABC Traders",
+    vendorGSTIN: "27ABCDE1234F1Z5",
+    invoiceNumber: "INV-1001",
+    purchaseDate: "2026-04-01",
+    taxableValue: 10000,
+    gstPaid: 1800
+  },
+  {
+    id: 2,
+    vendorName: "Shree Electronics",
+    vendorGSTIN: "27PQRSX5678L1Z2",
+    invoiceNumber: "INV-1002",
+    purchaseDate: "2026-04-05",
+    taxableValue: 25000,
+    gstPaid: 4500
+  },
+  {
+    id: 3,
+    vendorName: "Mahalaxmi Suppliers",
+    vendorGSTIN: "27LMNOP9876K1Z9",
+    invoiceNumber: "INV-1003",
+    purchaseDate: "2026-04-10",
+    taxableValue: 15000,
+    gstPaid: 2700
+  },
+  {
+    id: 4,
+    vendorName: "Sai Enterprises",
+    vendorGSTIN: "27WERTY3456H1Z7",
+    invoiceNumber: "INV-1004",
+    purchaseDate: "2026-04-15",
+    taxableValue: 8000,
+    gstPaid: 1440
+  },
+  {
+    id: 5,
+    vendorName: "Global Packaging",
+    vendorGSTIN: "27ZXCVB6543N1Z1",
+    invoiceNumber: "INV-1005",
+    purchaseDate: "2026-04-20",
+    taxableValue: 12000,
+    gstPaid: 2160
+  }
+];*/
+  const [purchases, setPurchases] = React.useState([]);
+  const navigate = useNavigate();
+  const businessData = useSelector((state) => state.business.businessData);
+  //console.log("Business Data in ITCTracker:", businessData._id);
+
+  React.useEffect(() => {
+  const fetchPurchases = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/v1/purchase/get-purchases/${businessData._id}`);
+
+      console.log("Purchases fetched successfully:", response.data.data);
+      setPurchases(response.data.data);
+
+    } catch (error) {
+      console.error("Error fetching purchases:", error);
+    }
+  };
+
+  fetchPurchases();
+}, [navigate]);
+  const totalITC = purchases.reduce((sum, p) => sum + (Number(p.totalGST) || 0), 0);
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
@@ -60,14 +131,18 @@ function ITCTracker({ purchases = [] }) {
                 {purchases.map((bill) => (
                   <tr key={bill.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 font-medium text-gray-800">{bill.vendorName}</td>
-                    <td className="px-6 py-4 text-gray-500 font-mono text-xs">{bill.vendorGSTIN}</td>
+                    <td className="px-6 py-4 text-gray-500 font-mono text-xs">{bill.vendorGstin}</td>
                     <td className="px-6 py-4 text-gray-600">{bill.invoiceNumber}</td>
-                    <td className="px-6 py-4 text-gray-500">{bill.purchaseDate}</td>
+                    <td className="px-6 py-4 text-gray-500">{new Date(bill.purchaseDate).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "2-digit",
+                      })}</td>
                     <td className="px-6 py-4 text-right text-gray-700">
-                      ₹{Number(bill.taxableValue).toLocaleString("en-IN")}
+                      ₹{Number(bill.taxableAmount).toLocaleString("en-IN")}
                     </td>
                     <td className="px-6 py-4 text-right text-green-600 font-semibold">
-                      ₹{Number(bill.gstPaid).toLocaleString("en-IN")}
+                      ₹{Number(bill.totalGST).toLocaleString("en-IN")}
                     </td>
                   </tr>
                 ))}
@@ -93,7 +168,7 @@ function ITCTracker({ purchases = [] }) {
         <h3 className="text-base font-semibold text-blue-600 mb-2">
           What is Input Tax Credit (ITC)?
         </h3>
-        <p className="text-sm text-gray-600 leading-relaxed">
+        <p className="text-sm  text-gray-600 leading-relaxed">
           Input Tax Credit means the GST you paid on purchases can be used to reduce
           the GST you owe on sales. This helps avoid double taxation and reduces your
           overall tax liability. For example, if you paid ₹1,800 GST on purchases and
