@@ -3,7 +3,6 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Invoice } from "../models/invoice.model.js";
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
 function getMonthFromDate(dateStr) {
   const months = ["Jan","Feb","Mar","Apr","May","Jun",
                   "Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -22,37 +21,27 @@ function round2(num) {
   return Math.round(num * 100) / 100;
 }
 
-// ── Create Invoice ────────────────────────────────────────────────────────────
 const createInvoice = asyncHandler(async (req, res) => {
   const {
-    // ── existing ──────────────────────────────────
     invoiceNumber,
     invoiceDate,
     gstRate,
     businessId,
-
-    // ── new: customer ─────────────────────────────
     customerName,
     customerGstin,
     customerState,
-
-    // ── new: item ─────────────────────────────────
     itemDescription,
     hsnCode,
     quantity,
     unitPrice,
-
-    // ── new: supply ───────────────────────────────
     transactionType,
     placeOfSupply,
-
-    // ── new: status ───────────────────────────────
     paymentStatus,
   } = req.body;
 
   //console.log("Received Invoice Data:", req.body);
 
-  // ── Validation ────────────────────────────────────────────────────────────
+
   if (
     !invoiceNumber?.trim()  ||
     !invoiceDate            ||
@@ -72,13 +61,13 @@ const createInvoice = asyncHandler(async (req, res) => {
     );
   }
 
-  // ── Duplicate check ───────────────────────────────────────────────────────
+  
   const existedInvoice = await Invoice.findOne({ invoiceNumber });
   if (existedInvoice) {
     throw new ApiError(409, "Invoice with this number already exists");
   }
 
-  // ── Calculations ──────────────────────────────────────────────────────────
+
   const gstRateNum    = parseFloat(gstRate);
   const qty           = parseFloat(quantity);
   const price         = parseFloat(unitPrice);
@@ -91,45 +80,30 @@ const createInvoice = asyncHandler(async (req, res) => {
   const sgst = transactionType === "intrastate" ? round2(gstAmount / 2) : 0;
   const igst = transactionType === "interstate"  ? gstAmount             : 0;
 
-  // ── Date formatting (your original logic) ────────────────────────────────
   const date          = new Date(invoiceDate);
 
-  // ── Create ────────────────────────────────────────────────────────────────
   const newInvoice = await Invoice.create({
-    // existing
     invoiceNumber,
     invoiceDate:   date,
     gstRate:       gstRateNum,
     businessId,
-
-    // auto-derived from date
     month:         getMonthFromDate(invoiceDate),
     financialYear: getFinancialYear(invoiceDate),
-
-    // customer
     customerName,
     customerGstin: customerGstin?.toUpperCase() || null,
     customerState,
-
-    // item
     itemDescription,
     hsnCode,
     quantity:      qty,
     unitPrice:     price,
-
-    // calculated
     taxableAmount,
     cgst,
     sgst,
     igst,
     totalGST:      gstAmount,
     totalAmount,
-
-    // supply
     placeOfSupply: placeOfSupply || customerState,
     transactionType,
-
-    // status
     paymentStatus: paymentStatus || "pending",
   });
 
@@ -138,7 +112,7 @@ const createInvoice = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Get All Invoices ──────────────────────────────────────────────────────────
+
 const getInvoices = asyncHandler(async (req, res) => {
   const { businessId } = req.params;
   //console.log("Fetching invoices for businessId:", businessId);
@@ -154,7 +128,6 @@ const getInvoices = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Get Single Invoice ────────────────────────────────────────────────────────
 const getInvoiceById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -168,7 +141,6 @@ const getInvoiceById = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Update Payment Status ─────────────────────────────────────────────────────
 const updatePaymentStatus = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { paymentStatus } = req.body;
@@ -192,7 +164,6 @@ const updatePaymentStatus = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Delete Invoice ────────────────────────────────────────────────────────────
 const deleteInvoice = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -206,7 +177,6 @@ const deleteInvoice = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Monthly Summary for Dashboard ────────────────────────────────────────────
 const getMonthlySummary = asyncHandler(async (req, res) => {
   const { businessId, financialYear } = req.query;
 

@@ -2,7 +2,6 @@ import mongoose, { Schema } from "mongoose";
 
 const purchaseSchema = new Schema(
   {
-    // ── Core Bill Info ───────────────────────────────────────────
     invoiceNumber: {
       type: String,
       required: true,
@@ -23,7 +22,6 @@ const purchaseSchema = new Schema(
       default: "2025-26",
     },
 
-    // ── Vendor Info ──────────────────────────────────────────────
     vendorName: {
       type: String,
       required: true,
@@ -41,7 +39,6 @@ const purchaseSchema = new Schema(
       trim: true,
     },
 
-    // ── Item Info ────────────────────────────────────────────────
     itemDescription: {
       type: String,
       required: true,
@@ -68,7 +65,6 @@ const purchaseSchema = new Schema(
       min: 0,
     },
 
-    // ── GST ──────────────────────────────────────────────────────
     gstRate: {
       type: Number,
       required: true,
@@ -90,7 +86,6 @@ const purchaseSchema = new Schema(
       min: 0,
     },
 
-    // ── ITC ──────────────────────────────────────────────────────
     itcEligible: {
       type: Boolean,
       required: true,
@@ -107,7 +102,6 @@ const purchaseSchema = new Schema(
       default: "unclaimed",
     },
 
-    // ── Transaction ──────────────────────────────────────────────
     placeOfSupply: {
       type: String,
       trim: true,
@@ -125,7 +119,6 @@ const purchaseSchema = new Schema(
       default: "pending",
     },
 
-    // ── Business ─────────────────────────────────────────────────
     businessId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Business",
@@ -136,21 +129,17 @@ const purchaseSchema = new Schema(
 );
 
 
-// ── ✅ FIXED INDEXES ─────────────────────────────────────────────
 
-// invoiceNumber unique per business
 purchaseSchema.index(
   { invoiceNumber: 1, businessId: 1 },
   { unique: true }
 );
 
-// vendor GSTIN unique per business (allows null)
 purchaseSchema.index(
   { vendorGstin: 1, businessId: 1 },
   { unique: true, sparse: true }
 );
 
-// Other indexes
 purchaseSchema.index({ businessId: 1, month: 1 });
 purchaseSchema.index({ businessId: 1, financialYear: 1 });
 purchaseSchema.index({ businessId: 1, itcEligible: 1 });
@@ -158,7 +147,6 @@ purchaseSchema.index({ businessId: 1, itcStatus: 1 });
 purchaseSchema.index({ businessId: 1, paymentStatus: 1 });
 
 
-// ── Virtuals ────────────────────────────────────────────────────
 purchaseSchema.virtual("gstRateLabel").get(function () {
   return this.gstRate + "%";
 });
@@ -169,7 +157,6 @@ purchaseSchema.virtual("itcPending").get(function () {
 });
 
 
-// ── Pre-save ────────────────────────────────────────────────────
 purchaseSchema.pre("save", function (next) {
   this.taxableAmount = this.quantity * this.unitPrice;
 

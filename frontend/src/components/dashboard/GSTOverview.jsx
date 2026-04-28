@@ -27,7 +27,6 @@ ChartJS.register(
   Filler
 );
 
-// ─── Data ────────────────────────────────────────────────────────────────────
 const MONTHS = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"];
 
 const ALL_DATA = {
@@ -56,7 +55,7 @@ const Q4_DATA = {
 
 const VIEWS = { all: ALL_DATA, q3: Q3_DATA, q4: Q4_DATA };
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 const fmt = (n) => "₹" + Number(n).toLocaleString("en-IN");
 
 const last = (arr) => arr[arr.length - 1];
@@ -64,7 +63,7 @@ const last = (arr) => arr[arr.length - 1];
 const itcRates = (d) =>
   d.itc.map((v, i) => parseFloat(((v / d.output[i]) * 100).toFixed(1)));
 
-// ─── Metric Card ─────────────────────────────────────────────────────────────
+
 const CARD_STYLES = {
   sales:  { accent: "bg-blue-500",   badge: "bg-blue-50 text-blue-700",   icon: "" },
   output: { accent: "bg-violet-500", badge: "bg-violet-50 text-violet-700", icon: "" },
@@ -96,12 +95,12 @@ function MetricCard({ label, value, trend, trendUp, type, animVal }) {
   );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+
 export default function GSTOverview() {
   const [view, setView] = useState("all");
   const data = VIEWS[view];
 
-  // animated metric values on view change
+ 
   const [animSales,  setAnimSales]  = useState(last(data.sales));
   const [animOutput, setAnimOutput] = useState(last(data.output));
   const [animITC,    setAnimITC]    = useState(last(data.itc));
@@ -132,7 +131,7 @@ export default function GSTOverview() {
     return () => timers.forEach(clearInterval);
   }, [view]);
 
-  // ── Chart configs ──────────────────────────────────────────────────────────
+  
   const mainChartData = {
     labels: data.labels,
     datasets: [
@@ -228,7 +227,7 @@ export default function GSTOverview() {
     },
   };
 
-  // Donut
+  
   const latestOutput = last(data.output);
   const latestITC    = last(data.itc);
   const latestNet    = last(data.net);
@@ -265,7 +264,7 @@ export default function GSTOverview() {
     },
   };
 
-  // ITC Utilization
+  
   const itcLineData = {
     labels: data.labels,
     datasets: [{

@@ -15,7 +15,6 @@ export default function SignIn() {
     formState: { errors },
   } = useForm();
 
-  /* ---------- auth redirect ---------- */
   const authStatus = useSelector((state) => state.auth.status);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,7 +24,6 @@ export default function SignIn() {
   }
   const [loginDone, setLoginDone] = useState(false);
 
-  /* ---------- submit ---------- */
   const onSubmit = async (data) => {
     try {
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/users/login`, data);
@@ -35,7 +33,6 @@ export default function SignIn() {
     }
   };
 
-  /* ---------- post-login flow ---------- */
   useEffect(() => {
     if (!loginDone) return;
 

@@ -4,7 +4,6 @@ import { Purchase } from "../models/purchase.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
 function getMonthFromDate(dateStr) {
   const months = ["Jan","Feb","Mar","Apr","May","Jun",
                   "Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -23,40 +22,27 @@ function round2(num) {
   return Math.round(num * 100) / 100;  // your original rounding logic
 }
 
-// ── Create Purchase ───────────────────────────────────────────────────────────
 const createPurchase = asyncHandler(async (req, res) => {
   const {
-    // ── existing ──────────────────────────────────
     invoiceNumber,
     vendorName,
     vendorGstin,
     gstRate,
     businessId,
     purchaseDate,
-
-    // ── new: vendor ───────────────────────────────
     vendorState,
-
-    // ── new: item ─────────────────────────────────
     itemDescription,
     hsnCode,
     quantity,
     unitPrice,
-
-    // ── new: itc ──────────────────────────────────
     itcEligible,
-
-    // ── new: supply ───────────────────────────────
     transactionType,
     placeOfSupply,
-
-    // ── new: status ───────────────────────────────
     paymentStatus,
   } = req.body;
 
   //console.log("Received purchase data:", req.body); // your original log
 
-  // ── Validation (your original fields first, then new) ────────────────────
   if (
     !invoiceNumber?.trim()   ||
     !vendorName?.trim()      ||
@@ -77,13 +63,11 @@ const createPurchase = asyncHandler(async (req, res) => {
     );
   }
 
-  // ── Duplicate check (your original logic) ─────────────────────────────────
   const existedPurchase = await Purchase.findOne({ invoiceNumber });
   if (existedPurchase) {
     throw new ApiError(409, "Invoice with this number already exists");
   }
 
-  // ── Calculations ──────────────────────────────────────────────────────────
   const gstRateNum    = parseFloat(gstRate);
   const qty           = parseFloat(quantity);
   const price         = parseFloat(unitPrice);
@@ -96,12 +80,10 @@ const createPurchase = asyncHandler(async (req, res) => {
   const sgst = transactionType === "intrastate" ? round2(gstAmount / 2) : 0;
   const igst = transactionType === "interstate"  ? gstAmount             : 0;
 
-  // ITC — only eligible bills get credit
   const isItcEligible = itcEligible === true || itcEligible === "true";
   const itcClaimed    = isItcEligible ? gstAmount : 0;
   const itcStatus     = isItcEligible ? "unclaimed" : "ineligible";
 
-  // ── Date formatting (your original logic) ─────────────────────────────────
   const date          = new Date(purchaseDate);
   const formattedDate = date.toLocaleDateString("en-IN", {
     day:   "2-digit",
@@ -113,45 +95,30 @@ const createPurchase = asyncHandler(async (req, res) => {
 
   // ── Create ────────────────────────────────────────────────────────────────
   const newPurchase = await Purchase.create({
-    // existing
     invoiceNumber,
     vendorName,
     vendorGstin:   vendorGstin.toUpperCase(),
     gstRate:       gstRateNum,
     businessId,
     purchaseDate:  formattedDate,
-
-    // auto-derived from date
     month:         getMonthFromDate(purchaseDate),
     financialYear: getFinancialYear(purchaseDate),
-
-    // vendor
     vendorState,
-
-    // item
     itemDescription,
     hsnCode,
     quantity:      qty,
     unitPrice:     price,
-
-    // calculated (your original round2 logic)
     taxableAmount,
     cgst,
     sgst,
     igst,
     totalGST:      round2(gstAmount),   // same as your Math.round(totalGST * 100) / 100
     totalAmount,
-
-    // itc
     itcEligible:   isItcEligible,
     itcClaimed,
     itcStatus,
-
-    // supply
     placeOfSupply: placeOfSupply || vendorState,
     transactionType,
-
-    // status
     paymentStatus: paymentStatus || "pending",
   });
 
@@ -160,10 +127,9 @@ const createPurchase = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Get All Purchases ─────────────────────────────────────────────────────────
 const getPurchases = asyncHandler(async (req, res) => {
   const { businessId } = req.params;
-  //console.log("Received businessId for fetching purchases:", businessId); // log to verify
+  //console.log("Received businessId for fetching purchases:", businessId);
 
   if (!businessId) {
     throw new ApiError(400, "businessId is required");
@@ -176,7 +142,6 @@ const getPurchases = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Get Single Purchase ───────────────────────────────────────────────────────
 const getPurchaseById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -190,7 +155,6 @@ const getPurchaseById = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Update Payment Status ─────────────────────────────────────────────────────
 const updatePaymentStatus = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { paymentStatus } = req.body;
@@ -214,7 +178,6 @@ const updatePaymentStatus = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Update ITC Status ─────────────────────────────────────────────────────────
 const updateItcStatus = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { itcStatus } = req.body;
@@ -243,7 +206,6 @@ const updateItcStatus = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Delete Purchase ───────────────────────────────────────────────────────────
 const deletePurchase = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -257,7 +219,6 @@ const deletePurchase = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Monthly ITC Summary for Dashboard ────────────────────────────────────────
 const getMonthlySummary = asyncHandler(async (req, res) => {
   const { businessId, financialYear } = req.query;
 
@@ -298,7 +259,6 @@ const getMonthlySummary = asyncHandler(async (req, res) => {
   );
 });
 
-// ── Combined Dashboard (Sales + Purchases) ────────────────────────────────────
 const getDashboardSummary = asyncHandler(async (req, res) => {
   const { businessId, financialYear } = req.query;
 
@@ -344,7 +304,6 @@ const getDashboardSummary = asyncHandler(async (req, res) => {
     ]),
   ]);
 
-  // Index by month name for easy lookup
   const salesMap    = Object.fromEntries(salesData.map((r) => [r._id, r]));
   const purchaseMap = Object.fromEntries(purchaseData.map((r) => [r._id, r]));
 

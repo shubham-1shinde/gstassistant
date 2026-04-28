@@ -2,7 +2,6 @@ import mongoose, {Schema} from "mongoose";
 
 const invoiceSchema = new Schema(
   {
-    // ── Core Invoice Info ────────────────────────────────────────
     invoiceNumber: {
       type: String,
       required: true,
@@ -21,10 +20,9 @@ const invoiceSchema = new Schema(
     financialYear: {
       type: String,
       required: true,
-      default: "2025-26",   // e.g. "2025-26"
+      default: "2025-26",  
     },
 
-    // ── Customer Info ────────────────────────────────────────────
     customerName: {
       type: String,
       required: true,
@@ -42,7 +40,6 @@ const invoiceSchema = new Schema(
       trim: true,
     },
 
-    // ── Item / Line Info ─────────────────────────────────────────
     itemDescription: {
       type: String,
       required: true,
@@ -69,7 +66,6 @@ const invoiceSchema = new Schema(
       min: 0,
     },
 
-    // ── GST Breakdown ────────────────────────────────────────────
     gstRate: {
       type: Number,           // stored as number: 18, 12, 5, 28, 3, 0
       required: true,
@@ -102,7 +98,6 @@ const invoiceSchema = new Schema(
       min: 0,
     },
 
-    // ── Supply & Transaction Info ────────────────────────────────
     placeOfSupply: {
       type: String,
       required: true,
@@ -114,7 +109,6 @@ const invoiceSchema = new Schema(
       enum: ["intrastate", "interstate"],
     },
 
-    // ── Status ───────────────────────────────────────────────────
     paymentStatus: {
       type: String,
       required: true,
@@ -122,7 +116,6 @@ const invoiceSchema = new Schema(
       default: "pending",
     },
 
-    // ── Business Reference ───────────────────────────────────────
     businessId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Business",
@@ -134,18 +127,15 @@ const invoiceSchema = new Schema(
   }
 );
 
-// ── Indexes for fast dashboard queries ───────────────────────────────────────
 invoiceSchema.index({ businessId: 1, month: 1 });
 invoiceSchema.index({ businessId: 1, financialYear: 1 });
 invoiceSchema.index({ businessId: 1, paymentStatus: 1 });
 invoiceSchema.index({ invoiceNumber: 1, businessId: 1 });
 
-// ── Virtual: GST Rate as string (e.g. "18%") ─────────────────────────────────
 invoiceSchema.virtual("gstRateLabel").get(function () {
   return this.gstRate + "%";
 });
 
-// ── Pre-save: auto-calculate totals ──────────────────────────────────────────
 invoiceSchema.pre("save", function (next) {
   // taxableAmount from quantity × unitPrice
   this.taxableAmount = this.quantity * this.unitPrice;
@@ -170,7 +160,6 @@ invoiceSchema.pre("save", function (next) {
   next();
 });
 
-// ── Static: monthly summary for dashboard ────────────────────────────────────
 invoiceSchema.statics.getMonthlySummary = async function (businessId, financialYear) {
   return this.aggregate([
     {

@@ -33,44 +33,6 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
-
-
-
-        {/* Dashboard Title */}
-        {/*<div className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-800 tracking-tight">Dashboard</h1>
-          <p className="text-slate-500 mt-1 text-sm">
-            Overview of your GST compliance
-          </p>
-        </div>*/}
-
-
-        {/* Stats Cards */}
-        {/*<div className="grid grid-cols-4 gap-6 mb-8">
-
-          <StatCard title="Total Sales" value={values.totalSales} />
-
-          <StatCard title="Output GST" value={values.outputGST} />
-
-          <StatCard title="Input ITC" value={values.inputITC} />
-
-          <StatCard title="Net GST Payable" value={values.netGST} />
-
-        </div>*/}
-
-
-        {/* Chart Section */}
-        {/*<div className="bg-white rounded-xl shadow p-6 h-72 flex flex-col items-center justify-center">
-
-          <h3 className="text-lg font-semibold mb-4">
-            Monthly GST Overview
-          </h3>
-
-          <p className="text-gray-400 text-center">
-            No data available yet. Start adding invoices and purchases to see insights.
-          </p>
-
-        </div>*/}
         <GSTOverview />
       </main>
     </div>

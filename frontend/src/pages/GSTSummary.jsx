@@ -34,7 +34,7 @@ function GSTSummary() {
     fetchInvoices();
   }, [navigate]);
 
-  // --- Calculations (UNCHANGED) ---
+  
   const totalTaxableSales = invoices.reduce((sum, inv) => sum + (Number(inv.taxableAmount) || 0), 0);
   const totalTaxablePurchases = purchases.reduce((sum, p) => sum + (Number(p.taxableAmount) || 0), 0);
 

@@ -8,7 +8,7 @@ import { combineReducers } from 'redux';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'business'], // Only persist the auth and business slices
+  whitelist: ['auth', 'business'],
 };
 
 const rootReducer = combineReducers({
@@ -23,7 +23,6 @@ const store = configureStore({
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore redux-persist actions
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PAUSE', 'persist/FLUSH', 'persist/PURGE', 'persist/REGISTER'],
       },
     }),

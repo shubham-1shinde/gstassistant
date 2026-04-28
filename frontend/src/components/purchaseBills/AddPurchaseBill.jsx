@@ -31,30 +31,21 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
   const businessData = useSelector((state) => state.business);
 
   const [form, setForm] = useState({
-    // ── existing fields ──────────────────────────
+   
     vendorName:      "",
     vendorGSTIN:     "",
     invoiceNumber:   "",
     purchaseDate:    "",
     gstRate:         18,
-
-    // ── new: vendor info ─────────────────────────
     vendorState:     "",
-
-    // ── new: item info ───────────────────────────
     itemDescription: "",
     hsnCode:         "",
     quantity:        "",
     unitPrice:       "",
-
-    // ── new: itc ─────────────────────────────────
     itcEligible:     true,
-
-    // ── new: status ──────────────────────────────
     paymentStatus:   "pending",
   });
 
-  // ── Live calculated values ────────────────────────────────────────────────
   const quantity      = parseFloat(form.quantity)  || 0;
   const unitPrice     = parseFloat(form.unitPrice) || 0;
   const gstRate       = parseFloat(form.gstRate)   || 0;
@@ -75,7 +66,7 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
   const sgst = transactionType === "intrastate" ? gstAmount / 2 : 0;
   const igst = transactionType === "interstate"  ? gstAmount     : 0;
 
-  // ─────────────────────────────────────────────────────────────────────────
+ 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -84,24 +75,18 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
     if (!form.vendorName || !form.quantity || !form.unitPrice) return;
 
     const payload = {
-      // core
+      
       invoiceNumber:      form.invoiceNumber,
       purchaseDate:        form.purchaseDate,
       month:           getMonthFromDate(form.purchaseDate),
       financialYear:   getFinancialYear(form.purchaseDate),
-
-      // vendor
       vendorName:      form.vendorName,
       vendorGstin:     form.vendorGSTIN || null,
       vendorState:     form.vendorState,
-
-      // item
       itemDescription: form.itemDescription,
       hsnCode:         form.hsnCode,
       quantity,
       unitPrice,
-
-      // gst
       gstRate,
       taxableAmount,
       cgst,
@@ -109,25 +94,15 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
       igst,
       totalGST:        gstAmount,
       totalAmount,
-
-      // itc
       itcEligible:     form.itcEligible,
       itcClaimed,
       itcStatus:       form.itcEligible ? "unclaimed" : "ineligible",
-
-      // supply
       placeOfSupply:   form.vendorState,
       transactionType,
-
-      // status
       paymentStatus:   form.paymentStatus,
-
-      // business
       businessId:      businessData?._id,
     };
-
-    console.log("Adding purchase bill with payload:", payload);
-
+    //console.log("Adding purchase bill with payload:", payload);
     onAdd(payload);
   };
 
@@ -351,7 +326,7 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
             </div>
           )}
 
-          {/* ── NEW: ITC Eligibility Toggle ── */}
+          {/*NEW: ITC Eligibility Toggle*/}
           <div className="flex items-start justify-between border border-slate-200 rounded-lg px-3.5 py-3">
             <div>
               <p className="text-sm font-medium text-slate-700">ITC Eligible</p>
@@ -371,7 +346,7 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
             </button>
           </div>
 
-          {/* ── NEW: Payment Status ── */}
+          {/*NEW: Payment Status*/}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Payment Status</label>
             <div className="flex gap-3">

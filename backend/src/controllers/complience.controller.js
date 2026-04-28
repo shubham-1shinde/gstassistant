@@ -36,9 +36,8 @@ export const getComplienceCalendar = async (req, res) => {
       const currentMonthIndex = monthNames.indexOf(m.month);
 
       let filingMonth = (currentMonthIndex + 1) % 12;
-      let filingYear = 2026; // can calculate dynamic later
+      let filingYear = 2026; 
 
-      // GSTR-1
       tasks.push({
         month: m.month,
         title: "GSTR-1 Filing",
@@ -46,7 +45,6 @@ export const getComplienceCalendar = async (req, res) => {
         date: new Date(filingYear, filingMonth, 11),
       });
 
-      // GSTR-3B
       tasks.push({
         month: m.month,
         title: "GSTR-3B Filing",
@@ -55,7 +53,6 @@ export const getComplienceCalendar = async (req, res) => {
       });
     });
 
-    // Status logic
     const today = new Date();
 
     const finalTasks = tasks.map((task) => {

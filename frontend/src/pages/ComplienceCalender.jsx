@@ -12,7 +12,6 @@ function ComplianceCalendar() {
   const [filings, setFilings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ───────────────── Fetch Dynamic Data ─────────────────
   useEffect(() => {
     const fetchCompliance = async () => {
       try {
@@ -32,15 +31,14 @@ function ComplianceCalendar() {
     fetchCompliance();
   }, [business, navigate]);
 
-  // ───────────────── Today Dynamic ─────────────────
+ 
   const today = new Date();
 
-  // ───────────────── Stats ─────────────────
   const completed = filings.filter((f) => f.status === "completed").length;
   const pending = filings.filter((f) => f.status === "pending").length;
   const upcoming = filings.filter((f) => f.status === "upcoming").length;
 
-  // ───────────────── Helpers ─────────────────
+
   const getDaysLeft = (date) => {
     const diff = Math.ceil(
       (new Date(date) - today) / (1000 * 60 * 60 * 24)
@@ -67,7 +65,7 @@ function ComplianceCalendar() {
     return <Clock size={20} className="text-blue-400 shrink-0" />;
   };
 
-  // ───────────────── Group By Month ─────────────────
+
   const grouped = useMemo(() => {
     return filings.reduce((acc, f) => {
       if (!acc[f.month]) acc[f.month] = [];
@@ -76,7 +74,7 @@ function ComplianceCalendar() {
     }, {});
   }, [filings]);
 
-  // ───────────────── Loading ─────────────────
+  
   if (loading) {
     return (
       <div className="p-8 text-center text-gray-500">

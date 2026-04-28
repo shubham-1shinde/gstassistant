@@ -6,53 +6,6 @@ import { PiggyBank, TrendingUp, AlertCircle } from "lucide-react";
 
 function ITCTracker() {
 
-  /*const purchases = [
-  {
-    id: 1,
-    vendorName: "ABC Traders",
-    vendorGSTIN: "27ABCDE1234F1Z5",
-    invoiceNumber: "INV-1001",
-    purchaseDate: "2026-04-01",
-    taxableValue: 10000,
-    gstPaid: 1800
-  },
-  {
-    id: 2,
-    vendorName: "Shree Electronics",
-    vendorGSTIN: "27PQRSX5678L1Z2",
-    invoiceNumber: "INV-1002",
-    purchaseDate: "2026-04-05",
-    taxableValue: 25000,
-    gstPaid: 4500
-  },
-  {
-    id: 3,
-    vendorName: "Mahalaxmi Suppliers",
-    vendorGSTIN: "27LMNOP9876K1Z9",
-    invoiceNumber: "INV-1003",
-    purchaseDate: "2026-04-10",
-    taxableValue: 15000,
-    gstPaid: 2700
-  },
-  {
-    id: 4,
-    vendorName: "Sai Enterprises",
-    vendorGSTIN: "27WERTY3456H1Z7",
-    invoiceNumber: "INV-1004",
-    purchaseDate: "2026-04-15",
-    taxableValue: 8000,
-    gstPaid: 1440
-  },
-  {
-    id: 5,
-    vendorName: "Global Packaging",
-    vendorGSTIN: "27ZXCVB6543N1Z1",
-    invoiceNumber: "INV-1005",
-    purchaseDate: "2026-04-20",
-    taxableValue: 12000,
-    gstPaid: 2160
-  }
-];*/
   const [purchases, setPurchases] = React.useState([]);
   const navigate = useNavigate();
   const businessData = useSelector((state) => state.business.businessData);
@@ -63,7 +16,7 @@ function ITCTracker() {
     try {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/v1/purchase/get-purchases/${businessData._id}`);
 
-      console.log("Purchases fetched successfully:", response.data.data);
+      //console.log("Purchases fetched successfully:", response.data.data);
       setPurchases(response.data.data);
 
     } catch (error) {

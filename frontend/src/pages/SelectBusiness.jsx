@@ -18,7 +18,7 @@ function SelectBusiness({ onSelectBusiness }) {
     try {
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/business/create-new-business`, formData);
       
-      // Refresh businesses list
+  
       const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/v1/business/get-businesses`);
       setBusinesses(data?.data || []);
       setShowModal(false);

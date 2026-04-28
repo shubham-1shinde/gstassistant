@@ -4,7 +4,6 @@ import  store  from '../store/store.js';
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL + '/v1';
 
-// Request interceptor to add auth header
 axios.interceptors.request.use(
   (config) => {
     const state = store.getState();
@@ -19,7 +18,6 @@ axios.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle 401
 axios.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -43,30 +43,25 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
     paymentStatus:   "pending",
   });
 
-  // ── Live calculated values ────────────────────────────────────────────────
   const quantity      = parseFloat(form.quantity)  || 0;
   const unitPrice     = parseFloat(form.unitPrice) || 0;
   const gstRate       = parseFloat(form.gstRate)   || 0;
-
   const taxableAmount = quantity * unitPrice;
   const gstAmount     = (taxableAmount * gstRate) / 100;
   const totalAmount   = taxableAmount + gstAmount;
-
-  // ── transactionType — normalize both sides before comparing ───────────────
   const transactionType =
     form.customerState && businessState
       ? form.customerState === businessState
         ? "intrastate"
         : "interstate"
       : "";
-
   const cgst = transactionType === "intrastate" ? gstAmount / 2 : 0;
   const sgst = transactionType === "intrastate" ? gstAmount / 2 : 0;
   const igst = transactionType === "interstate"  ? gstAmount     : 0;
 
   if (!isOpen) return null;
 
-  // ── log only when modal is open ───────────────────────────────────────────
+
   //console.log("customerState →", form.customerState);
   //console.log("transactionType →", transactionType);
 
@@ -130,7 +125,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
     "Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi",
     "Jammu & Kashmir","Ladakh","Puducherry","Chandigarh",
   ];
-  // ─────────────────────────────────────────────────────────────────────────
+  
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white w-[600px] rounded-xl shadow-xl p-6 relative max-h-[90vh] overflow-y-auto">
@@ -148,7 +143,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
-          {/* ── Row 1: Invoice Number + Date ── */}
+          {/*  Row 1: Invoice Number + Date  */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm text-gray-600">Invoice Number</label>
@@ -173,7 +168,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
             </div>
           </div>
 
-          {/* ── Row 2: Customer Name + GSTIN ── */}
+          {/* Row 2: Customer Name + GSTIN */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm text-gray-600">Customer Name</label>
@@ -205,7 +200,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
             </div>
           </div>
 
-          {/* ── Row 3: Customer State ── */}
+          {/* Row 3: Customer State */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm text-gray-600">Customer State</label>
@@ -236,7 +231,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
             </div>
           </div>
 
-          {/* ── Row 4: Item Description + HSN Code ── */}
+          {/* Row 4: Item Description + HSN Code */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm text-gray-600">Item Description</label>
@@ -262,7 +257,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
             </div>
           </div>
 
-          {/* ── Row 5: Quantity + Unit Price + GST Rate ── */}
+          {/* Row 5: Quantity + Unit Price + GST Rate */}
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="text-sm text-gray-600">Quantity</label>
@@ -306,7 +301,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
             </div>
           </div>
 
-          {/* ── Live Calculation Preview ── */}
+          {/* Live Calculation Preview */}
           {taxableAmount > 0 && (
             <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm border">
               <p className="font-medium text-gray-700 mb-2">Invoice Summary</p>
@@ -343,7 +338,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
             </div>
           )}
 
-          {/* ── Row 6: Payment Status ── */}
+          {/* Row 6: Payment Status */}
           <div>
             <label className="text-sm text-gray-600">Payment Status</label>
             <div className="flex gap-3 mt-2">
@@ -366,7 +361,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
             </div>
           </div>
 
-          {/* ── Buttons (original) ── */}
+          {/* Buttons (original) */}
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
