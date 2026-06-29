@@ -68,6 +68,7 @@ import { Chat } from "../models/chat.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
+import mongoose from "mongoose"
 
 
 export const chatWithGemini = async (req, res) => {
@@ -91,7 +92,7 @@ export const chatWithGemini = async (req, res) => {
 
         User: ${message}`,
     });
-    console.log(response);
+    //console.log(response);
 
     //console.log("only resp", response.output_text);
     //console.log("derived resp", response.data.reply.output_text);
@@ -121,12 +122,12 @@ export const chatWithGemini = async (req, res) => {
 
 export const getConvo = async (req, res) => {
   const {userId} = req.params;
-  console.log(userId);
+  //console.log(userId);
 
   const response = await Chat.aggregate([
   {
     $match: {
-      userId,
+      userId: new mongoose.Types.ObjectId(userId),
     },
   },
   {
@@ -140,7 +141,7 @@ export const getConvo = async (req, res) => {
     },
   },
 ]);
-  console.log("chats:",response)
+  //console.log("chats:",response)
 
   return res
     .status(200)

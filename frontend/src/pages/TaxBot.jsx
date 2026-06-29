@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import axios from 'axios';
 import { useSelector } from "react-redux";
 
 const now = new Date();
-
 const time = now.toLocaleTimeString("en-US", {
   hour: "2-digit",
   minute: "2-digit",
@@ -68,12 +67,21 @@ function MessageBubble({ msg }) {
     });
   };
 
-  return (
-    <div className={`flex gap-3 ${isBot ? "justify-start" : "justify-end flex-row-reverse"} items-end`}>
-      <Avatar role={msg.role} />
-      <div className={`max-w-[72%] ${isBot ? "" : "items-end flex flex-col"}`}>
+   return (
+    <div
+      className={`flex w-full ${
+        isBot ? "justify-start" : "justify-end"
+      } items-end gap-3`}
+    >
+      {isBot && <Avatar role="bot" />}
+
+      <div
+        className={`max-w-[72%] flex flex-col ${
+          isBot ? "items-start" : "items-end"
+        }`}
+      >
         <div
-          className={`px-4 py-3 rounded-2xl text-sm leading-relaxed shadow-sm ${
+          className={`px-4 py-3 rounded-2xl text-sm shadow-sm ${
             isBot
               ? "bg-white border border-gray-100 text-gray-700 rounded-bl-sm"
               : "bg-blue-700 text-white rounded-br-sm"
@@ -81,8 +89,13 @@ function MessageBubble({ msg }) {
         >
           {renderText(msg.text)}
         </div>
-        <span className="text-xs text-gray-400 mt-1 px-1">{msg.time}</span>
+
+        <span className="text-xs text-gray-400 mt-1">
+          {msg.time}
+        </span>
       </div>
+
+      {!isBot && <Avatar role="user" />}
     </div>
   );
 }
@@ -117,88 +130,112 @@ export default function TaxBot() {
   const [activeTopics] = useState(["GST Filing", "ITC Claims", "Invoicing"]);
   const messagesEndRef = useRef(null);
   const userData = useSelector((state) => state.auth.userData);
-  //console.log("userid:", userData._id);
+  const userId = userData?._id ?? userData?.Id;
+  //console.log("userid:", userId);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
+  messagesEndRef.current?.scrollIntoView({
+    behavior: "smooth",
+  });
+}, [messages, isTyping]);
+
+  const sendMessage = async (text) => {
+    if (!text.trim()) return;
+
+    const now = new Date().toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const userMsg = {
+      id: Date.now(),
+      role: "user",
+      text: text.trim(),
+      time: now,
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setIsTyping(true);
+
+    try {
+      if (!userId) throw new Error('Missing userId');
+          const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/v1/chat/`,
+        {
+          message: text,
+          userId
+        }
+      );
+      console.log("gemini response:", response);
+      
+
+      const botMsg = {
+        id: Date.now() + 1,
+        role: "bot",
+        text: response.data.reply,
+        time: new Date().toLocaleTimeString("en-IN", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (error) {
+      console.error(error);
+
+      const errorMsg = {
+        id: Date.now() + 1,
+        role: "bot",
+        text: "⚠️ Sorry, I'm unable to process your request right now. Please try again later.",
+        time: new Date().toLocaleTimeString("en-IN", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+
+      setMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
 
   const allMessages = async () => {
   
-  try {
-    const userId = userData.Id;
-    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/v1/chat/${userId}`);
-    console.log("all msg response:", response.data.data);
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/v1/chat/${userId}`
+    );
 
-  } catch (error) {
-    console.error(error);
-  } 
-};
+    const chats = [];
 
-useEffect(() => {
-    allMessages();
-  }, []);
+    data.data.forEach((item) => {
+      const time = new Date(item.createdAt).toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
 
-  const sendMessage = async (text) => {
-  if (!text.trim()) return;
+      chats.push({
+        id: item._id + "-u",
+        role: "user",
+        text: item.message,
+        time,
+      });
 
-  const now = new Date().toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+      chats.push({
+        id: item._id + "-b",
+        role: "bot",
+        text: item.reply,
+        time,
+      });
+    });
 
-  const userMsg = {
-    id: Date.now(),
-    role: "user",
-    text: text.trim(),
-    time: now,
+    setMessages(chats);
   };
 
-  setMessages((prev) => [...prev, userMsg]);
-  setInput("");
-  setIsTyping(true);
+  useEffect(() => {
+    allMessages();
+  }, [userId, sendMessage]);
 
-  try {
-    
-    const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/v1/chat/`,
-      {
-        message: text,
-        userId: userData._id
-      }
-    );
-    console.log("gemini response:", response);
-    
-
-    const botMsg = {
-      id: Date.now() + 1,
-      role: "bot",
-      text: response.data.reply,
-      time: new Date().toLocaleTimeString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-
-    setMessages((prev) => [...prev, botMsg]);
-  } catch (error) {
-    console.error(error);
-
-    const errorMsg = {
-      id: Date.now() + 1,
-      role: "bot",
-      text: "⚠️ Sorry, I'm unable to process your request right now. Please try again later.",
-      time: new Date().toLocaleTimeString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-
-    setMessages((prev) => [...prev, errorMsg]);
-  } finally {
-    setIsTyping(false);
-  }
-};
 
   return (
     <div className="flex bg-gray-50 min-h-screen font-sans">
