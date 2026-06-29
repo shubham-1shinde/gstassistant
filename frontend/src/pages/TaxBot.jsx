@@ -129,15 +129,40 @@ export default function TaxBot() {
   const [isTyping, setIsTyping] = useState(false);
   const [activeTopics] = useState(["GST Filing", "ITC Claims", "Invoicing"]);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  const [isNearBottom, setIsNearBottom] = useState(true);
+
   const userData = useSelector((state) => state.auth.userData);
   const userId = userData?._id ?? userData?.Id;
   //console.log("userid:", userId);
 
+  const handleScroll = () => {
+    const el = messagesContainerRef.current;
+    if (!el) return;
+
+    const thresholdPx = 120; // similar to WhatsApp feel: only stick when user is at/near bottom
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    setIsNearBottom(distanceFromBottom <= thresholdPx);
+  };
+
   useEffect(() => {
-  messagesEndRef.current?.scrollIntoView({
-    behavior: "smooth",
-  });
-}, [messages, isTyping]);
+    const el = messagesContainerRef.current;
+    if (!el) return;
+
+    // Initialize state based on current scroll position (e.g., after loading history)
+    handleScroll();
+
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Auto-scroll only if user is already near the bottom.
+  useEffect(() => {
+    if (!isNearBottom) return;
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping, isNearBottom]);
+
 
   const sendMessage = async (text) => {
     if (!text.trim()) return;
@@ -262,7 +287,8 @@ export default function TaxBot() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5 bg-gray-50/50">
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-6 py-5 space-y-5 bg-gray-50/50">
+
               {messages.map((msg) => (
                 <MessageBubble key={msg.id} msg={msg} />
               ))}

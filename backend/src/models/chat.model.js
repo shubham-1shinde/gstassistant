@@ -21,6 +21,6 @@ const chatSchema = new Schema(
     }
 )
 
-//chatSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
+chatSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
 export const Chat = mongoose.model("Chat", chatSchema)
