@@ -1,4 +1,15 @@
 import { useState, useRef, useEffect } from "react";
+import axios from 'axios';
+import { useSelector } from "react-redux";
+
+const now = new Date();
+
+const time = now.toLocaleTimeString("en-US", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true,
+});
+
 
 const SUGGESTED_QUESTIONS = [
   "What is my GST liability for this month?",
@@ -13,8 +24,8 @@ const INITIAL_MESSAGES = [
   {
     id: 1,
     role: "bot",
-    text: "Namaste, Shubham! 👋 I'm your **GST Tax Bot** — your personal compliance assistant.\n\nI can help you with:\n- GST calculations & filings\n- ITC claims & reconciliation\n- Compliance deadlines & penalties\n- Invoice & billing queries\n\nWhat would you like to know today?",
-    time: "09:00 AM",
+    text: `Namaste! 👋 I'm your **GST Tax Bot** — your personal compliance assistant.\n\nI can help you with:\n- GST calculations & filings\n- ITC claims & reconciliation\n- Compliance deadlines & penalties\n- Invoice & billing queries\n\nWhat would you like to know today?",
+    time: ${time}`,
   },
 ];
 
@@ -97,22 +108,7 @@ function TypingIndicator() {
   );
 }
 
-const BOT_RESPONSES = {
-  default: "I'm processing your query about GST compliance. Based on the latest GST regulations, let me provide you with accurate information...\n\nFor more specific answers, please ensure you've provided your GSTIN and relevant billing period.",
-  itc: "**Input Tax Credit (ITC)** can be claimed when:\n- You have a valid tax invoice\n- Goods/services are used for business\n- Supplier has filed GSTR-1\n- You've filed GSTR-3B\n\nYour current available ITC is **₹1,525** for FY 2025-26.",
-  gstr: "**GSTR-3B Due Dates (FY 2025-26):**\n- Turnover > ₹5 Cr: 20th of next month\n- Turnover ≤ ₹5 Cr (Cat I): 22nd\n- Turnover ≤ ₹5 Cr (Cat II): 24th\n\nYour next filing deadline is **20th April 2026**.",
-  liability: "Based on your current data:\n- **Total Sales:** ₹20,000\n- **Output GST:** ₹3,051\n- **Input ITC:** ₹1,525\n- **Net GST Payable:** ₹1,526\n\nYour liability has increased **5.7%** vs last period.",
-  rate: "**GST Rates for IT Services:**\n- Software development: **18%**\n- IT consulting: **18%**\n- BPO services: **18%**\n- Hardware (computers): **18%**\n- Mobile phones: **12%**",
-};
 
-function getResponse(text) {
-  const lower = text.toLowerCase();
-  if (lower.includes("itc") || lower.includes("input tax")) return BOT_RESPONSES.itc;
-  if (lower.includes("gstr") || lower.includes("due date") || lower.includes("filing")) return BOT_RESPONSES.gstr;
-  if (lower.includes("liability") || lower.includes("payable") || lower.includes("month")) return BOT_RESPONSES.liability;
-  if (lower.includes("rate") || lower.includes("it service") || lower.includes("percent")) return BOT_RESPONSES.rate;
-  return BOT_RESPONSES.default;
-}
 
 export default function TaxBot() {
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
@@ -120,31 +116,89 @@ export default function TaxBot() {
   const [isTyping, setIsTyping] = useState(false);
   const [activeTopics] = useState(["GST Filing", "ITC Claims", "Invoicing"]);
   const messagesEndRef = useRef(null);
+  const userData = useSelector((state) => state.auth.userData);
+  //console.log("userid:", userData._id);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  const sendMessage = (text) => {
-    if (!text.trim()) return;
-    const now = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
-    const userMsg = { id: Date.now(), role: "user", text: text.trim(), time: now };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-    setIsTyping(true);
+  const allMessages = async () => {
+  
+  try {
+    const userId = userData.Id;
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/v1/chat/${userId}`);
+    console.log("all msg response:", response.data.data);
 
-    setTimeout(() => {
-      const botText = getResponse(text);
-      const botMsg = {
-        id: Date.now() + 1,
-        role: "bot",
-        text: botText,
-        time: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }),
-      };
-      setMessages((prev) => [...prev, botMsg]);
-      setIsTyping(false);
-    }, 1400);
+  } catch (error) {
+    console.error(error);
+  } 
+};
+
+useEffect(() => {
+    allMessages();
+  }, []);
+
+  const sendMessage = async (text) => {
+  if (!text.trim()) return;
+
+  const now = new Date().toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const userMsg = {
+    id: Date.now(),
+    role: "user",
+    text: text.trim(),
+    time: now,
   };
+
+  setMessages((prev) => [...prev, userMsg]);
+  setInput("");
+  setIsTyping(true);
+
+  try {
+    
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/v1/chat/`,
+      {
+        message: text,
+        userId: userData._id
+      }
+    );
+    console.log("gemini response:", response);
+    
+
+    const botMsg = {
+      id: Date.now() + 1,
+      role: "bot",
+      text: response.data.reply,
+      time: new Date().toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+
+    setMessages((prev) => [...prev, botMsg]);
+  } catch (error) {
+    console.error(error);
+
+    const errorMsg = {
+      id: Date.now() + 1,
+      role: "bot",
+      text: "⚠️ Sorry, I'm unable to process your request right now. Please try again later.",
+      time: new Date().toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+
+    setMessages((prev) => [...prev, errorMsg]);
+  } finally {
+    setIsTyping(false);
+  }
+};
 
   return (
     <div className="flex bg-gray-50 min-h-screen font-sans">

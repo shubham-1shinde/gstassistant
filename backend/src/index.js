@@ -29,8 +29,6 @@ import { app } from "./app.js";
 
 
 
-
-
 connectDB()
   .then(() => {
     const port = process.env.PORT || 8000;
