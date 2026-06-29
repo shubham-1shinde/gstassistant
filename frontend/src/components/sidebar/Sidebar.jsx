@@ -20,6 +20,7 @@ function Sidebar() {
 
   const businessData = useSelector((state) => state.business.businessData);
   const userData = useSelector((state) => state.auth.userData);
+  const loginStatus = useSelector((state) => state.auth.status);
   //console.log("Sidebar businessData", businessData);
 
 
@@ -33,7 +34,7 @@ function Sidebar() {
       </div>
 
       {/* 2. Current Business Card */}
-      {businessData.ownerId === userData._id 
+      {loginStatus && businessData?.ownerId === userData?._id 
         ? <div className="mx-4 mt-4 mb-2 bg-blue-800/60 border border-blue-600 rounded-xl p-4">
             <div className="flex items-center gap-3">
               <div className="bg-blue-600 p-2 rounded-lg shrink-0">
