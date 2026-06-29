@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Plus, Upload } from "lucide-react";
 import CreateInvoice from "../components/salesInvoice/CreateInvoice.jsx";
 import axios from "../utils/axios.js";
@@ -10,48 +10,69 @@ function SalesInvoices() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const businessData = useSelector((state) => state.business.businessData);
+  const businessState = useSelector((state) => state.business.status);
 
 const handleAdd = async (invoice) => {
-
+  if (!businessState) return;
 
   const payload = {
     ...invoice,
     businessId: businessData._id
   };
 
-  setOpenModal(false);
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/v1/invoice/create-invoice`,
+      payload
+    );
 
-  //console.log("New Invoice Added:", payload);
-
-  const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/invoice/create-invoice`, payload)
-  .then((response) => {
-    //console.log("Invoice created successfully:", response.data);
-    setInvoices(prev => [response.data.data, ...prev]);
-  });
-    
+    setInvoices((prev) => [response.data.data, ...prev]);
+    setOpenModal(false);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-  const fetchInvoices = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/v1/invoice/get-invoices/${businessData._id}`);
-      //console.log("Fetched Invoices:", response.data);
-      setInvoices(response.data.data || []);
-    } catch (error) {
-      console.error('Error fetching invoices:', error);
-      setError('Failed to fetch invoices. Please check your authentication.');
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchInvoices = async () => {
+  if (!businessData?._id) {
+    setLoading(false);
+    return;
+  }
 
-  React.useEffect(() => {
+  try {
+    setLoading(true);
+    setError(null);
+
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/v1/invoice/get-invoices/${businessData._id}`
+    );
+
+    setInvoices(response.data.data || []);
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    setError("Failed to fetch invoices");
+  } finally {
+    setLoading(false);
+  }
+};
+
+  useEffect(() => {
     fetchInvoices();
-  }, []);
+  
+}, []);
 
-  return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+return (
+  <div className="p-8 bg-gray-50 min-h-screen">
+
+    {!businessData?._id && !loading ? (
+      <div className="text-center text-gray-500">
+        No business found. Please create a business to view invoices.
+      </div>
+    ) : loading ? (
+      <div className="text-center">Loading...</div>
+    ) : (
+      <>
+        <div className="p-8 bg-gray-50 min-h-screen">
 
       <div className="flex items-center justify-between mb-8">
         {/* Title */}
@@ -89,16 +110,6 @@ const handleAdd = async (invoice) => {
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             <p className="text-slate-400 text-sm">Loading invoices...</p>
-          </div>
-        ) : error ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-4">
-            <div className="text-red-400">
-              <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-            </div>
-            <p className="text-slate-400 text-sm">{error}</p>
-            <button onClick={fetchInvoices} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Retry</button>
           </div>
         ) : invoices.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
@@ -147,7 +158,12 @@ const handleAdd = async (invoice) => {
       />
 
     </div>
-  );
+      </>
+    )}
+
+  </div>
+);
+
 }
 
 export default SalesInvoices;

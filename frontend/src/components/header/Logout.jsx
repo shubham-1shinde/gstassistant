@@ -4,6 +4,7 @@ import {logout} from '../../store/authSlice'
 import { useNavigate } from 'react-router-dom'
 import {useSelector} from 'react-redux' 
 import axios from '../../utils/axios.js';
+import { logoutCurrentBusiness } from '../../store/businessSlice.js'
 
 function Logout() {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ function Logout() {
     const logoutHandler = async () => {
         await axios.post('/users/logout');
         dispatch(logout());
+        dispatch(logoutCurrentBusiness());
         localStorage.removeItem('status');
         localStorage.removeItem('accessToken');
         console.log("logout successfully");

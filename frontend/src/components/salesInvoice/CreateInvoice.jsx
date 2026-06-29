@@ -26,7 +26,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
   
 
   // ── Safely extract business state — covers all common Redux shape patterns ──
-  const businessState = businessData.businessData.state;
+  const businessState = businessData?.businessData?.state;
   //console.log("Extracted businessState:", businessState);
 
   const [form, setForm] = useState({
@@ -60,7 +60,6 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
   const igst = transactionType === "interstate"  ? gstAmount     : 0;
 
   if (!isOpen) return null;
-
 
   //console.log("customerState →", form.customerState);
   //console.log("transactionType →", transactionType);
@@ -113,7 +112,6 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
       unitPrice:       "",
       paymentStatus:   "pending",
     });
-
     console.log("Created invoice with payload:", payload);
   };
 
