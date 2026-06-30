@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import "./cron/compliance.cron.js";
 
 const app = express();
 
@@ -25,7 +26,7 @@ import businessRouter from './routes/business.routes.js'
 import invoiceRouter from './routes/invoice.routes.js'
 import purchaseRouter from './routes/purchase.routes.js'
 import dashboardRouter from './routes/dashboard.routes.js'
-import complienceRouter from './routes/complience.route.js'
+import complianceRouter from './routes/compliance.route.js'
 import chatRouter from './routes/chat.routes.js'
 
 //routes declaration
@@ -34,7 +35,7 @@ app.use("/api/v1/business", businessRouter)
 app.use("/api/v1/invoice", invoiceRouter)
 app.use("/api/v1/purchase", purchaseRouter)
 app.use("/api/v1/dashboard", dashboardRouter)
-app.use("/api/v1/complience", complienceRouter)
+app.use("/api/v1/compliance", complianceRouter)
 app.use("/api/v1/chat", chatRouter);
 
 // http://localhost:8000/api/v1/users/register

@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js"
 import { Business } from "../models/business.model.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { createMonthlyCompliance } from "../services/compliance.service.js";
 
 const createBusiness = asyncHandler( async (req, res) => {
     const { businessName, gstin, state } = req.body
@@ -25,6 +26,8 @@ const createBusiness = asyncHandler( async (req, res) => {
         state,
         ownerId: req.user._id
     })
+
+    await createMonthlyCompliance(newBusiness._id);
 
     return res.status(201).json(
         new ApiResponse(200, newBusiness, "Business created successfully")

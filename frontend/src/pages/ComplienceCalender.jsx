@@ -11,14 +11,15 @@ function ComplianceCalendar() {
 
   const [filings, setFilings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [markingId, setMarkingId] = useState(null);
 
   useEffect(() => {
     const fetchCompliance = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/v1/complience/getcomplience/${business._id}`
-        );
-        //console.log("Compliance calendar fetched successfully:", res.data.data);
+          `${import.meta.env.VITE_BACKEND_URL}/v1/compliance/getcompliance/${business._id}`
+        ); 
+        console.log("Compliance calendar fetched successfully:", res.data.data);
 
         setFilings(res.data.data);
       } catch (error) {
@@ -30,6 +31,24 @@ function ComplianceCalendar() {
 
     fetchCompliance();
   }, [business, navigate]);
+
+  const markAsCompleted = async (id) => {
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/v1/compliance/complete/${id}`
+      );
+
+      setFilings((prev) =>
+        prev.map((item) =>
+          item._id === id
+            ? { ...item, status: "completed" }
+            : item
+        )
+      );
+    } catch (err) {
+      console.error("Error marking completed:", err);
+    }
+  };
 
  
   const today = new Date();
@@ -142,12 +161,12 @@ function ComplianceCalendar() {
             {/* Rows */}
             <div className="divide-y divide-gray-100">
               {items.map((item, index) => {
-                const daysLeft = getDaysLeft(item.date);
+                const daysLeft = getDaysLeft(item.dueDate);
 
                 return (
                   <div
                     key={item._id || index}
-                    className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition"
+                    className="relative group flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition"
                   >
                     {/* Left */}
                     <div className="flex items-start gap-3">
@@ -166,30 +185,62 @@ function ComplianceCalendar() {
                     </div>
 
                     {/* Right */}
-                    <div className="text-right shrink-0 ml-4">
-                      <p className="text-sm font-medium text-gray-600">
-                        {formatDate(item.date)}
-                      </p>
+                    <div className="flex items-center gap-4">
+                      {item.status !== "completed" && (
+                        <button
+                          onClick={() => markAsCompleted(item._id)}
+                          disabled={markingId === item._id}
+                          className="
+                            opacity-0
+                            group-hover:opacity-100
+                            -translate-x-2
+                            group-hover:translate-x-0
+                            transition-all
+                            duration-200
+                            whitespace-nowrap
+                            bg-green-600
+                            hover:bg-green-700
+                            disabled:bg-green-400
+                            text-white
+                            text-sm
+                            font-medium
+                            px-4
+                            py-2
+                            rounded-lg
+                            shadow-md
+                          "
+                        >
+                          {markingId === item._id
+                            ? "Updating..."
+                            : "✓ Mark Complete"}
+                        </button>
+                      )}
 
-                      {item.status === "upcoming" && daysLeft > 0 && (
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          {daysLeft} days left
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-gray-600">
+                          {formatDate(item.dueDate)}
                         </p>
-                      )}
 
-                      {item.status === "pending" && (
-                        <p className="text-xs text-orange-400 mt-0.5 font-medium">
-                          {daysLeft === 0
-                            ? "Due today"
-                            : daysLeft < 0
-                            ? `${Math.abs(daysLeft)} days overdue`
-                            : `${daysLeft} days left`}
-                        </p>
-                      )}
+                        {item.status === "upcoming" && daysLeft > 0 && (
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            {daysLeft} days left
+                          </p>
+                        )}
 
-                      {item.status === "completed" && (
-                        <p className="text-xs text-green-500 mt-0.5">Done</p>
-                      )}
+                        {item.status === "pending" && (
+                          <p className="text-xs text-orange-500 mt-0.5 font-medium">
+                            {daysLeft === 0
+                              ? "Due today"
+                              : `${Math.abs(daysLeft)} days overdue`}
+                          </p>
+                        )}
+
+                        {item.status === "completed" && (
+                          <p className="text-xs text-green-500 mt-0.5">
+                            Completed
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
