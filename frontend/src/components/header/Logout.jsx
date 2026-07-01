@@ -11,7 +11,7 @@ function Logout() {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
     const logoutHandler = async () => {
-        await axios.post('/users/logout');
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/users/logout`);
         dispatch(logout());
         dispatch(logoutCurrentBusiness());
         localStorage.removeItem('status');
