@@ -8,13 +8,15 @@ import GSTOverview from "../components/dashboard/GSTOverview.jsx";
 export default function Dashboard() {
 
   const businessData = useSelector((state) => state.business.businessData);
-  const [values, setValues] = React.useState("");
+  const [values, setValues] = React.useState('');
 
   const fetchNumericValues = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/dashboard/get-numerical-values`, { businessId: businessData._id });
           //console.log("business", businessData);
+          
           setValues(response.data);
+      
         } catch (error) {
           console.error('Error fetching numerical values:', error);
           setError('Failed to fetch numerical values. Please check your authentication.');
@@ -25,15 +27,13 @@ export default function Dashboard() {
     fetchNumericValues();
   }, []);
 
+  console.log("values", values);
+
   return (
     <div className="flex h-screen bg-gray-100">
-
-      
-
-
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
-        <GSTOverview />
+        <GSTOverview values={values}/>
       </main>
     </div>
   );

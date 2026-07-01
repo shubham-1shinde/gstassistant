@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { getCurrentMonthAndFY } from "../../utils/date.js";
+import { useSelector } from "react-redux";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -87,29 +89,28 @@ function MetricCard({ label, value, trend, trendUp, type, animVal }) {
         {fmt(animVal ?? value)}
       </p>
 
-      <div className={`inline-flex items-center gap-1 mt-2 text-xs font-medium px-2 py-0.5 rounded-full ${s.badge}`}>
-        <span>{trendUp ? "▲" : "▼"}</span>
-        <span>{trend}</span>
-      </div>
+      
     </div>
   );
 }
 
 
-export default function GSTOverview() {
+export default function GSTOverview({values}) {
   const [view, setView] = useState("all");
   const data = VIEWS[view];
 
+  const businessData = useSelector((state) => state.business.businessData);
+  const { financialYear } = getCurrentMonthAndFY();
  
-  const [animSales,  setAnimSales]  = useState(last(data.sales));
-  const [animOutput, setAnimOutput] = useState(last(data.output));
-  const [animITC,    setAnimITC]    = useState(last(data.itc));
-  const [animNet,    setAnimNet]    = useState(last(data.net));
+  const [animSales,  setAnimSales]  = useState(values.totalSales);
+  const [animOutput, setAnimOutput] = useState(values.outputGST);
+  const [animITC,    setAnimITC]    = useState(values.inputGst);
+  const [animNet,    setAnimNet]    = useState(values.netGST);
 
   useEffect(() => {
     const targets = {
-      sales: last(data.sales), output: last(data.output),
-      itc: last(data.itc), net: last(data.net),
+      sales: values.totalSales, output: values.outputGst,
+      itc: values.inputITC, net: values.netGst,
     };
     const setters = { sales: setAnimSales, output: setAnimOutput, itc: setAnimITC, net: setAnimNet };
     const duration = 500;
@@ -228,9 +229,9 @@ export default function GSTOverview() {
   };
 
   
-  const latestOutput = last(data.output);
-  const latestITC    = last(data.itc);
-  const latestNet    = last(data.net);
+  const latestOutput = values.outputGST;
+  const latestITC    = values.inputITC;
+  const latestNet    = values.netGST;
 
   const donutData = {
     labels: ["Output GST", "Input ITC", "Net Payable"],
@@ -305,6 +306,7 @@ export default function GSTOverview() {
   };
 
   const totalGST = latestOutput + latestITC + latestNet;
+  //console.log(values.totalSales, values.outputGST, values.inputITC, values.netGST)
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 font-sans overflow-hidden">
@@ -315,8 +317,8 @@ export default function GSTOverview() {
           <div>
             <h1 className="text-xl font-bold text-gray-800 tracking-tight">Monthly GST Overview</h1>
             <p className="text-xs text-gray-400 mt-0.5">
-              FY 2025–26 &nbsp;·&nbsp; Shubham Private Limited &nbsp;·&nbsp;
-              <span className="font-mono">27ABCDE1234F2Z5</span>
+              {financialYear} &nbsp;· &nbsp; {businessData.businessName} &nbsp;· &nbsp;
+              <span className="font-mono">{businessData.gstin}</span>
             </p>
           </div>
 
@@ -340,10 +342,10 @@ export default function GSTOverview() {
 
         {/* ── Metric Cards ── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard label="Total Sales"    value={last(data.sales)}  animVal={animSales}  trend="12.4% vs last" trendUp type="sales" />
-          <MetricCard label="Output GST"     value={last(data.output)} animVal={animOutput} trend="8.2% vs last"  trendUp type="output" />
-          <MetricCard label="Input ITC"      value={last(data.itc)}    animVal={animITC}    trend="3.1% vs last"  trendUp={false} type="itc" />
-          <MetricCard label="Net GST Payable" value={last(data.net)}   animVal={animNet}    trend="5.7% vs last"  trendUp type="net" />
+          <MetricCard label="Total Sales"    value={values.totalSales}  animVal={animSales}  trend="12.4% vs last" trendUp type="sales" />
+          <MetricCard label="Output GST"     value={values.outputGST} animVal={animOutput} trend="8.2% vs last"  trendUp type="output" />
+          <MetricCard label="Input ITC"      value={values.inputITC}    animVal={animITC}    trend="3.1% vs last"  trendUp={false} type="itc" />
+          <MetricCard label="Net GST Payable" value={values.netGST}   animVal={animNet}    trend="5.7% vs last"  trendUp type="net" />
         </div>
 
         {/* ── Main combo chart ── */}

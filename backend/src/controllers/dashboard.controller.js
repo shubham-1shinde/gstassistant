@@ -53,7 +53,8 @@ const getNumericalValues = asyncHandler(async (req, res) => {
         totalSales,
         inputITC,
         outputGST,
-        netGST: netGST.toFixed(2),
+        netGST: Number(netGST.toFixed(2))
+,
     });
 
 });
