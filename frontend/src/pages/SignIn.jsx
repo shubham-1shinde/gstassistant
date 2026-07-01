@@ -26,6 +26,7 @@ export default function SignIn() {
 
   const onSubmit = async (data) => {
     try {
+      console.log(data);
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/users/login`, data);
       setLoginDone(true);
     } catch (err) {

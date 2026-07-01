@@ -27,7 +27,8 @@ import invoiceRouter from './routes/invoice.routes.js'
 import purchaseRouter from './routes/purchase.routes.js'
 import dashboardRouter from './routes/dashboard.routes.js'
 import complianceRouter from './routes/compliance.route.js'
-import chatRouter from './routes/chat.routes.js'
+import chatRouter from './routes/chat.route.js'
+import gstRouter from './routes/gst.route.js'
 
 //routes declaration
 app.use("/api/v1/users", userRouter)
@@ -37,6 +38,7 @@ app.use("/api/v1/purchase", purchaseRouter)
 app.use("/api/v1/dashboard", dashboardRouter)
 app.use("/api/v1/compliance", complianceRouter)
 app.use("/api/v1/chat", chatRouter);
+app.use("/api/v1/gst", gstRouter);
 
 // http://localhost:8000/api/v1/users/register
 

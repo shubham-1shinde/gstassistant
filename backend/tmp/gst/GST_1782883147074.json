@@ -1,0 +1,151 @@
+{
+  "GSTR1": {
+    "invoices": [
+      {
+        "_id": "69f03e5fa9075b29225be417",
+        "invoiceNumber": "INV-2025-006",
+        "invoiceDate": "2025-08-04T18:30:00.000Z",
+        "month": "Jun",
+        "financialYear": "2025-26",
+        "customerName": "Nashik Agro",
+        "customerGstin": "27AABCN2345F1Z5",
+        "customerState": "Gujarat",
+        "itemDescription": "Agricultural Equipment",
+        "hsnCode": "8432",
+        "quantity": 3,
+        "unitPrice": 600,
+        "taxableAmount": 1800,
+        "gstRate": 12,
+        "cgst": 0,
+        "sgst": 0,
+        "igst": 216,
+        "totalGST": 216,
+        "totalAmount": 2016,
+        "placeOfSupply": "Gujarat",
+        "transactionType": "interstate",
+        "paymentStatus": "paid",
+        "businessId": "69b5abbb4c6786f2459c38ec"
+      },
+      {
+        "_id": "69f03e27a9075b29225be413",
+        "invoiceNumber": "INV-2025-004",
+        "invoiceDate": "2025-03-04T18:30:00.000Z",
+        "month": "Jun",
+        "financialYear": "2025-26",
+        "customerName": "Pune Tech Solutions",
+        "customerGstin": "27AABCP3456D1Z9",
+        "customerState": "Delhi",
+        "itemDescription": "Software Services",
+        "hsnCode": "998314",
+        "quantity": 1,
+        "unitPrice": 5000,
+        "taxableAmount": 5000,
+        "gstRate": 18,
+        "cgst": 0,
+        "sgst": 0,
+        "igst": 900,
+        "totalGST": 900,
+        "totalAmount": 5900,
+        "placeOfSupply": "Delhi",
+        "transactionType": "interstate",
+        "paymentStatus": "paid",
+        "businessId": "69b5abbb4c6786f2459c38ec"
+      }
+    ],
+    "summary": [
+      {
+        "_id": null,
+        "taxableValue": 6800,
+        "cgst": 0,
+        "sgst": 0,
+        "igst": 1116,
+        "totalGST": 1116,
+        "totalInvoiceValue": 7916,
+        "invoiceCount": 2
+      }
+    ],
+    "b2b": [
+      {
+        "_id": "69f03e27a9075b29225be413",
+        "invoiceNumber": "INV-2025-004",
+        "invoiceDate": "2025-03-04T18:30:00.000Z",
+        "customerName": "Pune Tech Solutions",
+        "customerGstin": "27AABCP3456D1Z9",
+        "taxableAmount": 5000,
+        "gstRate": 18,
+        "cgst": 0,
+        "sgst": 0,
+        "igst": 900,
+        "totalGST": 900,
+        "totalAmount": 5900,
+        "placeOfSupply": "Delhi"
+      },
+      {
+        "_id": "69f03e5fa9075b29225be417",
+        "invoiceNumber": "INV-2025-006",
+        "invoiceDate": "2025-08-04T18:30:00.000Z",
+        "customerName": "Nashik Agro",
+        "customerGstin": "27AABCN2345F1Z5",
+        "taxableAmount": 1800,
+        "gstRate": 12,
+        "cgst": 0,
+        "sgst": 0,
+        "igst": 216,
+        "totalGST": 216,
+        "totalAmount": 2016,
+        "placeOfSupply": "Gujarat"
+      }
+    ],
+    "b2c": [],
+    "hsn": [
+      {
+        "description": "Agricultural Equipment",
+        "quantity": 3,
+        "taxableValue": 1800,
+        "cgst": 0,
+        "sgst": 0,
+        "igst": 216,
+        "totalGST": 216,
+        "totalInvoiceValue": 2016,
+        "hsnCode": "8432"
+      },
+      {
+        "description": "Software Services",
+        "quantity": 1,
+        "taxableValue": 5000,
+        "cgst": 0,
+        "sgst": 0,
+        "igst": 900,
+        "totalGST": 900,
+        "totalInvoiceValue": 5900,
+        "hsnCode": "998314"
+      }
+    ]
+  },
+  "GSTR3B": {
+    "outwardSupplies": {
+      "_id": null,
+      "taxableValue": 6800,
+      "cgst": 0,
+      "sgst": 0,
+      "igst": 1116,
+      "totalGST": 1116,
+      "totalInvoiceValue": 7916,
+      "invoiceCount": 2
+    },
+    "inwardSupplies": {
+      "_id": null,
+      "taxablePurchase": 7500,
+      "inputCGST": 0,
+      "inputSGST": 0,
+      "inputIGST": 1170,
+      "inputGST": 1170
+    },
+    "taxPayable": {
+      "cgst": 0,
+      "sgst": 0,
+      "igst": 0
+    },
+    "totalPayable": 0
+  }
+}
