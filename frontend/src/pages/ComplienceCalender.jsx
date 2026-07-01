@@ -19,7 +19,7 @@ function ComplianceCalendar() {
         const res = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/v1/compliance/getcompliance/${business._id}`
         ); 
-        console.log("Compliance calendar fetched successfully:", res.data.data);
+        //console.log("Compliance calendar fetched successfully:", res.data.data);
 
         setFilings(res.data.data);
       } catch (error) {

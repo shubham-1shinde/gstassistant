@@ -94,7 +94,7 @@ function SelectBusiness({ onSelectBusiness }) {
                 const businessData = res.data.data;
                 if (businessData) {
                   dispatch(currentBusiness({businessData}));
-                  navigate("/");
+                  navigate("/dashboard");
                 }
                 //console.log("Selected card Business Data", businessData);
               }}

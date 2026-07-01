@@ -27,7 +27,7 @@ export default function Dashboard() {
     fetchNumericValues();
   }, []);
 
-  console.log("values", values);
+  //console.log("values", values);
 
   return (
     <div className="flex h-screen bg-gray-100">

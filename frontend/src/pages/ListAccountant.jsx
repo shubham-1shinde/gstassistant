@@ -3,69 +3,6 @@ import { Search, Mail, Phone, Building2, Shield, MoreVertical, UserCheck, UserX 
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const dummyAccountants = [
-  {
-    id: 1,
-    fullName: "Rahul Mehta",
-    email: "rahul.mehta@example.com",
-    phone: "9876543210",
-    firmName: "Mehta & Associates",
-    status: "active",
-    joined: "12 Jan 2024",
-    clients: 14,
-  },
-  {
-    id: 2,
-    fullName: "Priya Sharma",
-    email: "priya.sharma@taxpro.in",
-    phone: "9823456789",
-    firmName: "Sharma Tax Consultants",
-    status: "active",
-    joined: "03 Feb 2024",
-    clients: 9,
-  },
-  {
-    id: 3,
-    fullName: "Amit Desai",
-    email: "amit.desai@finserve.com",
-    phone: "9712345678",
-    firmName: "Desai Financial Services",
-    status: "inactive",
-    joined: "28 Nov 2023",
-    clients: 5,
-  },
-  {
-    id: 4,
-    fullName: "Sneha Patil",
-    email: "sneha.patil@gstpro.in",
-    phone: "9654321098",
-    firmName: "Patil GST Solutions",
-    status: "active",
-    joined: "17 Mar 2024",
-    clients: 21,
-  },
-  {
-    id: 5,
-    fullName: "Vikram Joshi",
-    email: "vikram.joshi@complytax.com",
-    phone: "9988776655",
-    firmName: "ComplyTax LLP",
-    status: "inactive",
-    joined: "05 Oct 2023",
-    clients: 3,
-  },
-  {
-    id: 6,
-    fullName: "Neha Kulkarni",
-    email: "neha.kulkarni@taxwise.in",
-    phone: "9811223344",
-    firmName: "TaxWise Advisory",
-    status: "active",
-    joined: "22 Apr 2024",
-    clients: 17,
-  },
-];
-
 function getInitials(name) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase();
 }
@@ -86,7 +23,7 @@ function ListAccountants() {
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/v1/accountant/get`
       );
-      console.log("Fetched accountants:", response.data);
+      //console.log("Fetched accountants:", response.data);
 
       setAccountants(response.data.data || []);
     } catch (error) {

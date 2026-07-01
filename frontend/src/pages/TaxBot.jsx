@@ -188,7 +188,7 @@ export default function TaxBot() {
           userId
         }
       );
-      console.log("gemini response:", response);
+      //console.log("gemini response:", response);
       
 
       const botMsg = {

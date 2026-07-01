@@ -11,8 +11,7 @@ import Loading from './components/Loading.jsx'
 function App() {
 
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch()
-  console.log("hi");
+  const dispatch = useDispatch();
 
   useEffect( () => {
     let isMounted = true;   

@@ -46,10 +46,10 @@ function GSTSummary() {
           month,
           financialYear
       });
-      console.log("GST export response:", res.data);
+      //console.log("GST export response:", res.data);
 
       const { downloadUrl } = res.data;
-      console.log("Download URL:", downloadUrl);
+      //console.log("Download URL:", downloadUrl);
       
 
       // trigger download
