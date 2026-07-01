@@ -11,6 +11,7 @@ import {
   Star,
   Send,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const BENEFITS = [
   {
@@ -67,7 +68,7 @@ const ContactAccountant = () => {
                 <div className="h-12 w-12 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center ring-1 ring-white/20">
                   <UserCheck size={24} />
                 </div>
-                <div>
+                <div> 
                   <h2 className="text-xl font-semibold leading-tight">
                     Hire an Accountant
                   </h2>
@@ -107,7 +108,10 @@ const ContactAccountant = () => {
                 "
               >
                 <UserCheck size={18} />
-                Hire Accountant
+                <Link to="/list-accountants">
+                  Hire Accountant
+                </Link>
+                
                 <ArrowRight
                   size={18}
                   className="transition-transform group-hover:translate-x-1"
@@ -162,7 +166,7 @@ const ContactAccountant = () => {
           </div>
         </div>
 
-        {/* Consultation form */}
+        {/* Consultation form 
         <div className="bg-white border rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-1">
             Consult an Accountant
@@ -232,7 +236,7 @@ const ContactAccountant = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>*/}
       </div>
     </div>
   );

@@ -6,7 +6,6 @@ export const downloadGSTFile = async (req, res) => {
     const { filename } = req.params;
 
     const filePath = path.join(process.cwd(), "tmp", "gst", filename);
-    console.log('File path:', filePath);
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).json({ error: "File not found" });

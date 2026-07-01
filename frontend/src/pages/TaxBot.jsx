@@ -9,14 +9,12 @@ const time = now.toLocaleTimeString("en-US", {
   hour12: true,
 });
 
-
 const SUGGESTED_QUESTIONS = [
-  "What is my GST liability for this month?",
-  "How do I claim Input Tax Credit?",
-  "When is my GSTR-3B due date?",
-  "Explain reverse charge mechanism",
   "What are the GST rates for IT services?",
+  "How do I claim Input Tax Credit?",
   "How to file GSTR-1 online?",
+  "Explain reverse charge mechanism?",
+  "What is GSTR-3B and how is it different from GSTR-1?",
 ];
 
 const INITIAL_MESSAGES = [
@@ -121,8 +119,6 @@ function TypingIndicator() {
   );
 }
 
-
-
 export default function TaxBot() {
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
@@ -225,37 +221,40 @@ export default function TaxBot() {
     }
   };
 
-  const allMessages = async () => {
-  
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/v1/chat/${userId}`
-    );
+ const allMessages = async () => {
+  const { data } = await axios.get(
+    `${import.meta.env.VITE_BACKEND_URL}/v1/chat/${userId}`
+  );
 
-    const chats = [];
+  const chats = [];
 
-    data.data.forEach((item) => {
-      const time = new Date(item.createdAt).toLocaleTimeString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-
-      chats.push({
-        id: item._id + "-u",
-        role: "user",
-        text: item.message,
-        time,
-      });
-
-      chats.push({
-        id: item._id + "-b",
-        role: "bot",
-        text: item.reply,
-        time,
-      });
+  data.data.forEach((item) => {
+    const time = new Date(item.createdAt).toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
     });
 
+    chats.push({
+      id: item._id + "-u",
+      role: "user",
+      text: item.message,
+      time,
+    });
+
+    chats.push({
+      id: item._id + "-b",
+      role: "bot",
+      text: item.reply,
+      time,
+    });
+  });
+
+  if (chats.length > 0) {
     setMessages(chats);
-  };
+  } else {
+    setMessages(INITIAL_MESSAGES);
+  }
+};
 
   useEffect(() => {
     allMessages();
@@ -287,7 +286,7 @@ export default function TaxBot() {
             </div>
 
             {/* Messages */}
-            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-6 py-5 space-y-5 bg-gray-50/50">
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-6 py-5 space-y-5 bg-gray-50/50 ">
 
               {messages.map((msg) => (
                 <MessageBubble key={msg.id} msg={msg} />
@@ -300,7 +299,7 @@ export default function TaxBot() {
             <div className="px-6 py-3 border-t border-gray-100 bg-white">
               <p className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Quick Questions</p>
               <div className="flex flex-wrap gap-2">
-                {SUGGESTED_QUESTIONS.slice(0, 4).map((q) => (
+                {SUGGESTED_QUESTIONS.slice(0, 5).map((q) => (
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
@@ -339,91 +338,7 @@ export default function TaxBot() {
           </div>
 
           {/* Right Panel */}
-          <div className="w-72 flex flex-col gap-4 overflow-y-auto">
-            {/* GST Snapshot */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-              <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                <span>📊</span> Your GST Snapshot
-              </h4>
-              <div className="space-y-3">
-                {[
-                  { label: "Total Sales", value: "₹20,000", color: "text-blue-700", bg: "bg-blue-50", change: "+12.4%", up: true },
-                  { label: "Output GST", value: "₹3,051", color: "text-purple-700", bg: "bg-purple-50", change: "+8.2%", up: true },
-                  { label: "Input ITC", value: "₹1,525", color: "text-green-700", bg: "bg-green-50", change: "-3.1%", up: false },
-                  { label: "Net Payable", value: "₹1,526", color: "text-orange-700", bg: "bg-orange-50", change: "+5.7%", up: true },
-                ].map((item) => (
-                  <div key={item.label} className={`${item.bg} rounded-xl px-3 py-2.5 flex items-center justify-between`}>
-                    <div>
-                      <p className="text-xs text-gray-500">{item.label}</p>
-                      <p className={`font-bold text-sm ${item.color}`}>{item.value}</p>
-                    </div>
-                    <span className={`text-xs font-medium ${item.up ? "text-green-600" : "text-red-500"}`}>
-                      {item.up ? "▲" : "▼"} {item.change}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Compliance Deadlines */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-              <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                <span>📅</span> Upcoming Deadlines
-              </h4>
-              <div className="space-y-3">
-                {[
-                  { form: "GSTR-1", date: "11 Apr 2026", days: 26, status: "Pending" },
-                  { form: "GSTR-3B", date: "20 Apr 2026", days: 35, status: "Pending" },
-                  { form: "GSTR-9", date: "31 Dec 2026", days: 290, status: "Annual" },
-                ].map((d) => (
-                  <div key={d.form} className="flex items-center justify-between border-b border-gray-50 pb-2.5 last:border-0 last:pb-0">
-                    <div>
-                      <p className="text-sm font-semibold text-gray-700">{d.form}</p>
-                      <p className="text-xs text-gray-400">{d.date}</p>
-                    </div>
-                    <div className="text-right">
-                      <span
-                        className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                          d.days < 30
-                            ? "bg-red-50 text-red-600"
-                            : d.days < 60
-                            ? "bg-yellow-50 text-yellow-700"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
-                      >
-                        {d.days}d left
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-              <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                <span>⚡</span> Quick Actions
-              </h4>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { icon: "🧾", label: "Add Invoice" },
-                  { icon: "📥", label: "Add Bill" },
-                  { icon: "📤", label: "File GSTR-1" },
-                  { icon: "📑", label: "File GSTR-3B" },
-                ].map((a) => (
-                  <button
-                    key={a.label}
-                    className="flex flex-col items-center gap-1.5 bg-gray-50 hover:bg-blue-50 hover:border-blue-200 border border-gray-100 rounded-xl py-3 px-2 transition-all group"
-                  >
-                    <span className="text-xl">{a.icon}</span>
-                    <span className="text-xs text-gray-600 group-hover:text-blue-700 font-medium text-center leading-tight">
-                      {a.label}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>

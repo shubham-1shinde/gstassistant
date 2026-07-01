@@ -13,7 +13,6 @@ export const generateGSTFile = async (data, fileName) => {
     const jsonData = JSON.stringify(data, null, 2);
 
     await fs.writeFile(filePath, jsonData, "utf8");
-    console.log(`GST file generated at: ${filePath}`); 
 
     return filePath;
 };

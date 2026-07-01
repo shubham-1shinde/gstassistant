@@ -18,6 +18,9 @@ import ComplienceCalender from './pages/ComplienceCalender.jsx';
 import SelectBusiness from './pages/SelectBusiness.jsx';
 import TaxBot from './pages/TaxBot.jsx';
 import ContactAccountant from './pages/ContactAccountant.jsx';
+import RegisterAccountant from './pages/RegisterAccountant.jsx';
+import ListAccountant from './pages/ListAccountant.jsx';
+import ThankYouRegister from './pages/ThankYouRegister.jsx';
 
 const router = createBrowserRouter([
 
@@ -28,6 +31,18 @@ const router = createBrowserRouter([
   {
     path: "/sign-up",
     element: <SignUp />,
+  },
+  {
+    path: "/register-accountant",
+    element: (
+      <RegisterAccountant />
+    ),
+  },
+  {
+    path: "/thank-you",
+    element: (
+      <ThankYouRegister />
+    ),
   },
   {
     path: "/",
@@ -85,6 +100,12 @@ const router = createBrowserRouter([
         path: "/taxbot",
         element: (
           <TaxBot />
+        ),
+      },
+      {
+        path: "/list-accountants",
+        element: (
+          <ListAccountant />
         ),
       },
     ]

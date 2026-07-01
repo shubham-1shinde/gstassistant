@@ -69,8 +69,7 @@ export const exportGST = async (req, res) => {
 
         // 3. Save file
         const filePath = await generateGSTFile(result, fileName);
-        console.log('GST file generated at:', filePath);
-
+      
         // 4. Return download URL
         res.json({
             success: true,
