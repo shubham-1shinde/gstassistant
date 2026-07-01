@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getCurrentMonthAndFY } from "../utils/date";
 import { TrendingUp, TrendingDown, DollarSign, FileText } from "lucide-react";
 
 function GSTSummary() {
@@ -10,6 +11,7 @@ function GSTSummary() {
   const [invoices, setInvoices] = React.useState([]);
   const navigate = useNavigate();
   const businessData = useSelector((state) => state.business.businessData);
+  const { month, financialYear } = getCurrentMonthAndFY();
 
   React.useEffect(() => {
     const fetchPurchases = async () => {
@@ -34,6 +36,26 @@ function GSTSummary() {
     fetchInvoices();
   }, [navigate]);
 
+
+
+  const exportGST = async () => {
+
+      const businessId = businessData._id;
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/gst/export`, {
+          businessId,
+          month,
+          financialYear
+      });
+      console.log("GST export response:", res.data);
+
+      const { downloadUrl } = res.data;
+      console.log("Download URL:", downloadUrl);
+      
+
+      // trigger download
+      window.open(downloadUrl, "_blank");
+  };
+
   
   const totalTaxableSales = invoices.reduce((sum, inv) => sum + (Number(inv.taxableAmount) || 0), 0);
   const totalTaxablePurchases = purchases.reduce((sum, p) => sum + (Number(p.taxableAmount) || 0), 0);
@@ -57,9 +79,43 @@ function GSTSummary() {
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
 
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">GST Summary</h1>
-        <p className="text-gray-500 mt-1">Overview of your GST performance</p>
+      <div className="mb-8 flex items-start justify-between">
+        {/* Left Side */}
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">GST Summary</h1>
+          <p className="text-gray-500 mt-1">
+            Overview of your GST performance
+          </p>
+        </div>
+
+        {/* Right Side Button */}
+        <button
+          className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-lg 
+                    bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium
+                    shadow-md hover:shadow-xl transition-all duration-300
+                    hover:scale-[1.05] active:scale-95 overflow-hidden"
+          onClick={() => exportGST()}
+        >
+          {/* shine effect */}
+          <span className="absolute inset-0 w-full h-full bg-white/10 translate-x-[-100%] 
+                          group-hover:translate-x-[100%] transition-transform duration-700" />
+
+          <svg
+            className="w-4 h-4 relative z-10"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v3h16v-3"
+            />
+          </svg>
+
+          <span className="relative z-10">Export File</span>
+        </button>
       </div>
 
       {/* Net GST Card (Highlight) */}
