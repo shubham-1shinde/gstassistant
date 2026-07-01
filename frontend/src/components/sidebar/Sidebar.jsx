@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 function Sidebar() {
 
   const menuItems = [
-    { to: "/", icon: <MdDashboard />, label: "Dashboard" },
+    { to: "/dashboard", icon: <MdDashboard />, label: "Dashboard" },
     { to: "/invoices", icon: <FaFileInvoice />, label: "Sales Invoices" },
     { to: "/purchases", icon: <FaShoppingCart />, label: "Purchase Bills" },
     { to: "/itc-tracker", icon: <FaChartBar />, label: "ITC Tracker" },

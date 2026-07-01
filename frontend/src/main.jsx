@@ -6,7 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
-
+import  AuthLayout from './components/AuthLayout.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import SignIn from './pages/SignIn.jsx'
 import SignUp from './pages/SignUp.jsx'
@@ -26,22 +26,34 @@ const router = createBrowserRouter([
 
   {
     path: "/sign-in",
-    element: <SignIn />,
+    element: (
+      <AuthLayout authentication={false}>
+        <SignIn />
+      </AuthLayout>
+    ),
   },
   {
     path: "/sign-up",
-    element: <SignUp />,
+    element: (
+      <AuthLayout authentication={false}>
+        <SignUp />
+      </AuthLayout>
+    ),
   },
   {
     path: "/register-accountant",
     element: (
-      <RegisterAccountant />
+      <AuthLayout authentication={false}>
+        <RegisterAccountant />
+      </AuthLayout>
     ),
   },
   {
     path: "/thank-you",
     element: (
-      <ThankYouRegister />
+      <AuthLayout authentication={false}>
+        <ThankYouRegister />
+      </AuthLayout>
     ),
   },
   {
@@ -49,63 +61,83 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/",
+        path: "/dashboard",
         element: (
-          <Dashboard />
+          <AuthLayout authentication={true}>
+            <Dashboard />
+          </AuthLayout>
         ),
       },
       {
         path: "/invoices",
         element: (
-          <SalesInvoices />
+          <AuthLayout authentication={true}>
+            <SalesInvoices />
+          </AuthLayout>
         ),
       },
       {
         path: "/purchases",
         element: (
-          <PurchaseBills />
+          <AuthLayout authentication={true}>
+            <PurchaseBills />
+          </AuthLayout>
         ),
       },
       {
         path: "/itc-tracker",
         element: (
-          <ITCtracker />
+          <AuthLayout authentication={true}>
+            <ITCtracker />
+          </AuthLayout>
         ),
       },
       {
         path: "/gst-summary",
         element: (
-          <GSTSummary />
+          <AuthLayout authentication={true}>
+            <GSTSummary />
+          </AuthLayout>   
         ),
       },
       {
         path: "/compliance",
         element: (
-          <ComplienceCalender />
+          <AuthLayout authentication={true}>
+            <ComplienceCalender />
+          </AuthLayout> 
         ),
       },
       {
         path: "/select-business",
         element: (
-          <SelectBusiness />
+          <AuthLayout authentication={true}>
+            <SelectBusiness />
+          </AuthLayout>
         ),
       },
       {
         path: "/contact-accountant",
         element: (
-          <ContactAccountant />
+          <AuthLayout authentication={true}>
+            <ContactAccountant />
+          </AuthLayout>
         ),
       },
       {
         path: "/taxbot",
         element: (
-          <TaxBot />
+          <AuthLayout authentication={true}>
+            <TaxBot />
+          </AuthLayout>
         ),
       },
       {
         path: "/list-accountants",
         element: (
-          <ListAccountant />
+          <AuthLayout authentication={true}>
+            <ListAccountant />
+          </AuthLayout>
         ),
       },
     ]
