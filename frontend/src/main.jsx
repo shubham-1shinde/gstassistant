@@ -42,19 +42,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/register-accountant",
-    element: (
-      <AuthLayout authentication={false}>
-        <RegisterAccountant />
-      </AuthLayout>
-    ),
+    element: <RegisterAccountant />
   },
   {
     path: "/thank-you",
-    element: (
-      <AuthLayout authentication={false}>
-        <ThankYouRegister />
-      </AuthLayout>
-    ),
+    element: <ThankYouRegister />
   },
   {
     path: "/",
