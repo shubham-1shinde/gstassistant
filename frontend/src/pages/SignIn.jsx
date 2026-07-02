@@ -66,107 +66,32 @@ export default function SignIn() {
   }, [loginDone, dispatch, navigate]);
 
   return (
-    <div className="min-h-screen flex">
+  <div className="min-h-screen flex flex-col-reverse lg:flex-row">
 
-      {/* LEFT SIDE */}
-      <div className="w-1/2 flex items-center justify-center bg-white">
+    {/* RIGHT SIDE (INFO) → now shows FIRST on mobile */}
+    <div className="w-full lg:w-1/2 bg-gradient-to-br from-blue-700 to-blue-500 text-white flex items-center justify-center px-4 py-8 sm:px-6 pt-36 lg:px-0 order-2 lg:order-1">
 
-        <div className="w-full max-w-md p-8">
+      <div className="max-w-md text-center lg:text-left">
 
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-8">
-            <div className="bg-blue-600 p-2 rounded-lg text-white">
-              📊
-            </div>
-            <div>
-              <h2 className="font-semibold text-lg">GST Assistant</h2>
-              <p className="text-gray-500 text-sm">Compliance Made Easy</p>
-            </div>
+        <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+          Simplify Your GST Compliance
+        </h2>
+
+        <p className="text-blue-100 mb-8">
+          Track invoices, manage ITC, and stay compliant with India's GST
+          regulations – all in one place.
+        </p>
+
+        <div className="flex justify-center lg:justify-start gap-4">
+
+          <div className="bg-white/20 backdrop-blur p-4 rounded-lg text-center">
+            <h3 className="text-xl font-bold">100%</h3>
+            <p className="text-sm">Compliant</p>
           </div>
 
-          <h1 className="text-3xl font-bold mb-2">Welcome back</h1>
-          <p className="text-gray-500 mb-6">
-            Sign in to your account to continue
-          </p>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
-            {/* Email */}
-            <div>
-              <label className="text-sm text-gray-600">Email Address</label>
-              <div className="flex items-center border rounded-lg mt-1 px-3">
-                <Mail className="w-4 text-gray-400" />
-                <input
-                  type="email"
-                  placeholder="you@company.com"
-                  className="w-full p-2 outline-none"
-                  {...register('email', { required: 'Email is required' })}
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="text-sm text-gray-600">Password</label>
-              <div className="flex items-center border rounded-lg mt-1 px-3">
-                <Lock className="w-4 text-gray-400" />
-                <input
-                  type="password"
-                  className="w-full p-2 outline-none"
-                  {...register('password', { required: '{Password} is required' })}
-                />
-              </div>
-            </div>
-
-            {/* Button */}
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
-            >
-              Sign in →
-            </button>
-          </form>
-
-          <p className="text-sm text-center text-gray-500 mt-6">
-            Don't have an account?{" "}
-            <span className="text-blue-600 cursor-pointer">
-              <Link
-                to="/sign-up"
-                className="text-pink-300 hover:text-white font-medium transition"
-              >
-                Sign Up
-              </Link>
-            </span>
-          </p>
-
-        </div>
-      </div>
-
-      {/* RIGHT SIDE */}
-      <div className="w-1/2 bg-gradient-to-br from-blue-700 to-blue-500 text-white flex items-center justify-center p-10">
-
-        <div className="max-w-md">
-
-          <h2 className="text-4xl font-bold mb-4">
-            Simplify Your GST Compliance
-          </h2>
-
-          <p className="text-blue-100 mb-8">
-            Track invoices, manage ITC, and stay compliant with India's GST regulations – all in one place.
-          </p>
-
-          <div className="flex gap-4">
-
-            <div className="bg-white/20 backdrop-blur p-4 rounded-lg">
-              <h3 className="text-xl font-bold">100%</h3>
-              <p className="text-sm">Compliant</p>
-            </div>
-
-            <div className="bg-white/20 backdrop-blur p-4 rounded-lg">
-              <h3 className="text-xl font-bold">24/7</h3>
-              <p className="text-sm">Support</p>
-            </div>
-
+          <div className="bg-white/20 backdrop-blur p-4 rounded-lg text-center">
+            <h3 className="text-xl font-bold">24/7</h3>
+            <p className="text-sm">Support</p>
           </div>
 
         </div>
@@ -174,5 +99,99 @@ export default function SignIn() {
       </div>
 
     </div>
-  );
+
+    {/* LEFT SIDE (LOGIN) → now SECOND on mobile */}
+    <div className="w-full lg:w-1/2 flex items-center justify-center bg-white px-4 py-8 sm:px-6 lg:px-0">
+
+      <div className="w-full max-w-md">
+
+        {/* Logo */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="bg-blue-600 p-2 rounded-lg text-white text-lg">
+            📊
+          </div>
+
+          <div>
+            <h2 className="font-semibold text-lg">GST Assistant</h2>
+            <p className="text-gray-500 text-sm">
+              Compliance Made Easy
+            </p>
+          </div>
+        </div>
+
+        <h1 className="text-3xl font-bold mb-2">
+          Welcome back
+        </h1>
+
+        <p className="text-gray-500 mb-6">
+          Sign in to your account to continue
+        </p>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+          {/* Email */}
+          <div>
+            <label className="text-sm text-gray-600">
+              Email Address
+            </label>
+
+            <div className="flex items-center border rounded-lg mt-1 px-3">
+              <Mail className="w-4 text-gray-400 flex-shrink-0" />
+
+              <input
+                type="email"
+                placeholder="you@company.com"
+                className="w-full p-3 sm:p-2 outline-none"
+                {...register("email", {
+                  required: "Email is required",
+                })}
+              />
+            </div>
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="text-sm text-gray-600">
+              Password
+            </label>
+
+            <div className="flex items-center border rounded-lg mt-1 px-3">
+              <Lock className="w-4 text-gray-400 flex-shrink-0" />
+
+              <input
+                type="password"
+                className="w-full p-3 sm:p-2 outline-none"
+                {...register("password", {
+                  required: "Password is required",
+                })}
+              />
+            </div>
+          </div>
+
+          {/* Button */}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+          >
+            Sign in →
+          </button>
+
+        </form>
+
+        <p className="text-sm text-center text-gray-500 mt-6">
+          Don't have an account?{" "}
+          <Link
+            to="/sign-up"
+            className="text-blue-600 hover:text-blue-800 font-medium"
+          >
+            Sign Up
+          </Link>
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+);
 }

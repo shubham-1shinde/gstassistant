@@ -262,85 +262,131 @@ export default function TaxBot() {
 
 
   return (
-    <div className="flex bg-gray-50 min-h-screen font-sans">
-      <div className="flex-1 flex flex-col min-h-screen">
-        <div className="flex flex-1 gap-5 p-6 overflow-hidden">
-          {/* Chat Area */}
-          <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            {/* Chat Header */}
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-4 bg-gradient-to-r from-blue-700 to-blue-800">
-              <div className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center shadow-md">
-                <span className="text-2xl">🤖</span>
-              </div>
-              <div>
-                <h3 className="text-white font-semibold text-base">GST Tax Bot</h3>
-                <p className="text-blue-200 text-xs">Powered by AI • Expert in Indian GST</p>
-              </div>
-              <div className="ml-auto flex gap-2">
-                {activeTopics.map((t) => (
-                  <span key={t} className="bg-white/15 text-white text-xs px-2.5 py-1 rounded-full border border-white/20">
-                    {t}
-                  </span>
-                ))}
-              </div>
+  <div className="flex bg-gray-50 min-h-screen font-sans">
+
+    <div className="flex-1 flex flex-col min-h-screen">
+
+      <div className="flex flex-1 flex-col md:flex-row gap-3 md:gap-5 p-3 md:p-6 overflow-hidden">
+
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+
+          {/* Chat Header */}
+          <div className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-100 flex items-center gap-3 md:gap-4 bg-gradient-to-r from-blue-700 to-blue-800">
+
+            <div className="w-10 md:w-11 h-10 md:h-11 rounded-full bg-white/20 flex items-center justify-center shadow-md">
+              <span className="text-xl md:text-2xl">🤖</span>
             </div>
 
-            {/* Messages */}
-            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-6 py-5 space-y-5 bg-gray-50/50 ">
-
-              {messages.map((msg) => (
-                <MessageBubble key={msg.id} msg={msg} />
-              ))}
-              {isTyping && <TypingIndicator />}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Suggested Questions */}
-            <div className="px-6 py-3 border-t border-gray-100 bg-white">
-              <p className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Quick Questions</p>
-              <div className="flex flex-wrap gap-2">
-                {SUGGESTED_QUESTIONS.slice(0, 5).map((q) => (
-                  <button
-                    key={q}
-                    onClick={() => sendMessage(q)}
-                    className="text-xs text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full hover:bg-blue-100 transition-colors"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Input */}
-            <div className="px-5 py-4 bg-white border-t border-gray-100">
-              <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-                <span className="text-gray-400 text-lg">💬</span>
-                <input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
-                  placeholder="Ask about GST, ITC, filing deadlines..."
-                  className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
-                />
-                <button
-                  onClick={() => sendMessage(input)}
-                  disabled={!input.trim() || isTyping}
-                  className="bg-blue-700 hover:bg-blue-800 disabled:opacity-40 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <span>Send</span>
-                  <span className="text-xs">↑</span>
-                </button>
-              </div>
-              <p className="text-center text-xs text-gray-400 mt-2">
-                Tax Bot can make mistakes. Verify important tax decisions with a CA.
+            <div className="min-w-0">
+              <h3 className="text-white font-semibold text-sm md:text-base">
+                GST Tax Bot
+              </h3>
+              <p className="text-blue-200 text-[10px] md:text-xs">
+                Powered by AI • Expert in Indian GST
               </p>
             </div>
+
+            <div className="ml-auto hidden md:flex gap-2">
+              {activeTopics.map((t) => (
+                <span
+                  key={t}
+                  className="bg-white/15 text-white text-xs px-2.5 py-1 rounded-full border border-white/20"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+
           </div>
 
-          {/* Right Panel */}
-          
+          {/* Messages */}
+          <div
+            ref={messagesContainerRef}
+            className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-5 space-y-4 md:space-y-5 bg-gray-50/50"
+          >
+            {messages.map((msg) => (
+              <MessageBubble key={msg.id} msg={msg} />
+            ))}
+
+            {isTyping && <TypingIndicator />}
+
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Suggested Questions */}
+          <div className="px-3 md:px-6 py-3 border-t border-gray-100 bg-white">
+
+            <p className="text-[10px] md:text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">
+              Quick Questions
+            </p>
+
+            <div className="flex flex-wrap gap-2">
+              {SUGGESTED_QUESTIONS.slice(0, 5).map((q) => (
+                <button
+                  key={q}
+                  onClick={() => sendMessage(q)}
+                  className="
+                    text-[10px] md:text-xs
+                    text-blue-700 bg-blue-50 border border-blue-100
+                    px-2.5 md:px-3 py-1.5 rounded-full
+                    hover:bg-blue-100 active:bg-blue-200
+                    transition-colors
+                  "
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+
+          </div>
+
+          {/* Input */}
+          <div className="px-3 md:px-5 py-3 md:py-4 bg-white border-t border-gray-100">
+
+            <div className="flex items-center gap-2 md:gap-3 bg-gray-50 border border-gray-200 rounded-xl px-3 md:px-4 py-2.5
+              focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+
+              <span className="text-gray-400 text-base md:text-lg">💬</span>
+
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
+                placeholder="Ask about GST, ITC, filing deadlines..."
+                className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
+              />
+
+              <button
+                onClick={() => sendMessage(input)}
+                disabled={!input.trim() || isTyping}
+                className="
+                  bg-blue-700 hover:bg-blue-800 active:scale-95
+                  disabled:opacity-40 text-white text-sm font-medium
+                  px-3 md:px-4 py-1.5 rounded-lg transition-colors flex items-center gap-2
+                "
+              >
+                <span>Send</span>
+                <span className="text-xs">↑</span>
+              </button>
+
+            </div>
+
+            <p className="text-center text-[10px] md:text-xs text-gray-400 mt-2">
+              Tax Bot can make mistakes. Verify important tax decisions with a CA.
+            </p>
+
+          </div>
+
         </div>
+
+        {/* Right Panel */}
+        <div className="hidden md:block w-[300px] lg:w-[350px]">
+          {/* your right panel stays exactly same */}
+        </div>
+
       </div>
     </div>
-  );
+  </div>
+);
 }

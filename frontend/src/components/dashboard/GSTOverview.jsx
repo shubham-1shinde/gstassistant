@@ -57,51 +57,41 @@ const Q4_DATA = {
 
 const VIEWS = { all: ALL_DATA, q3: Q3_DATA, q4: Q4_DATA };
 
-
 const fmt = (n) => "₹" + Number(n).toLocaleString("en-IN");
-
 const last = (arr) => arr[arr.length - 1];
-
 const itcRates = (d) =>
   d.itc.map((v, i) => parseFloat(((v / d.output[i]) * 100).toFixed(1)));
 
-
 const CARD_STYLES = {
-  sales:  { accent: "bg-blue-500",   badge: "bg-blue-50 text-blue-700",   icon: "" },
+  sales:  { accent: "bg-blue-500",   badge: "bg-blue-50 text-blue-700",    icon: "" },
   output: { accent: "bg-violet-500", badge: "bg-violet-50 text-violet-700", icon: "" },
-  itc:    { accent: "bg-teal-500",   badge: "bg-teal-50 text-teal-700",   icon: "" },
+  itc:    { accent: "bg-teal-500",   badge: "bg-teal-50 text-teal-700",    icon: "" },
   net:    { accent: "bg-orange-500", badge: "bg-orange-50 text-orange-700", icon: "" },
 };
 
 function MetricCard({ label, value, trend, trendUp, type, animVal }) {
   const s = CARD_STYLES[type];
   return (
-    <div className="relative bg-white rounded-2xl border border-gray-100 p-5 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 group">
-      {/* accent bar */}
+    <div className="relative bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 group">
       <div className={`absolute left-0 top-0 bottom-0 w-1 ${s.accent} rounded-l-2xl`} />
-
-      <div className="flex items-start justify-between mb-3">
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-widest">{label}</p>
+      <div className="flex items-start justify-between mb-2 sm:mb-3">
+        <p className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-widest leading-tight">{label}</p>
         <span className="text-base">{s.icon}</span>
       </div>
-
-      <p className="text-2xl font-bold text-gray-800 font-mono tabular-nums">
+      <p className="text-lg sm:text-2xl font-bold text-gray-800 font-mono tabular-nums">
         {fmt(animVal ?? value)}
       </p>
-
-      
     </div>
   );
 }
 
-
-export default function GSTOverview({values}) {
+export default function GSTOverview({ values }) {
   const [view, setView] = useState("all");
   const data = VIEWS[view];
 
   const businessData = useSelector((state) => state.business.businessData);
   const { financialYear } = getCurrentMonthAndFY();
- 
+
   const [animSales,  setAnimSales]  = useState(values.totalSales);
   const [animOutput, setAnimOutput] = useState(values.outputGST);
   const [animITC,    setAnimITC]    = useState(values.inputGst);
@@ -132,7 +122,6 @@ export default function GSTOverview({values}) {
     return () => timers.forEach(clearInterval);
   }, [view]);
 
-  
   const mainChartData = {
     labels: data.labels,
     datasets: [
@@ -228,7 +217,6 @@ export default function GSTOverview({values}) {
     },
   };
 
-  
   const latestOutput = values.outputGST;
   const latestITC    = values.inputITC;
   const latestNet    = values.netGST;
@@ -265,7 +253,6 @@ export default function GSTOverview({values}) {
     },
   };
 
-  
   const itcLineData = {
     labels: data.labels,
     datasets: [{
@@ -306,18 +293,17 @@ export default function GSTOverview({values}) {
   };
 
   const totalGST = latestOutput + latestITC + latestNet;
-  //console.log(values.totalSales, values.outputGST, values.inputITC, values.netGST)
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 font-sans overflow-hidden">
-      <div className="max-w-5xl mx-auto space-y-5">
+    <div className="min-h-screen bg-slate-50 p-3 sm:p-6 font-sans overflow-hidden">
+      <div className="max-w-5xl mx-auto space-y-4 sm:space-y-5">
 
         {/* ── Header ── */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold text-gray-800 tracking-tight">Monthly GST Overview</h1>
-            <p className="text-xs text-gray-400 mt-0.5">
-              {financialYear} &nbsp;· &nbsp; {businessData.businessName} &nbsp;· &nbsp;
+            <h1 className="text-lg sm:text-xl font-bold text-gray-800 tracking-tight">Monthly GST Overview</h1>
+            <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5 leading-relaxed">
+              {financialYear} &nbsp;·&nbsp; {businessData.businessName} &nbsp;·&nbsp;
               <span className="font-mono">{businessData.gstin}</span>
             </p>
           </div>
@@ -328,7 +314,7 @@ export default function GSTOverview({values}) {
               <button
                 key={v}
                 onClick={() => setView(v)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
+                className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                   view === v
                     ? "bg-blue-600 text-white shadow"
                     : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
@@ -341,21 +327,21 @@ export default function GSTOverview({values}) {
         </div>
 
         {/* ── Metric Cards ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard label="Total Sales"    value={values.totalSales}  animVal={animSales}  trend="12.4% vs last" trendUp type="sales" />
-          <MetricCard label="Output GST"     value={values.outputGST} animVal={animOutput} trend="8.2% vs last"  trendUp type="output" />
-          <MetricCard label="Input ITC"      value={values.inputITC}    animVal={animITC}    trend="3.1% vs last"  trendUp={false} type="itc" />
-          <MetricCard label="Net GST Payable" value={values.netGST}   animVal={animNet}    trend="5.7% vs last"  trendUp type="net" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <MetricCard label="Total Sales"     value={values.totalSales} animVal={animSales}  trend="12.4% vs last" trendUp type="sales" />
+          <MetricCard label="Output GST"      value={values.outputGST}  animVal={animOutput} trend="8.2% vs last"  trendUp type="output" />
+          <MetricCard label="Input ITC"       value={values.inputITC}   animVal={animITC}    trend="3.1% vs last"  trendUp={false} type="itc" />
+          <MetricCard label="Net GST Payable" value={values.netGST}     animVal={animNet}    trend="5.7% vs last"  trendUp type="net" />
         </div>
 
         {/* ── Main combo chart ── */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 mb-4 sm:mb-5">
             <div>
               <h2 className="text-sm font-semibold text-gray-700">Sales & GST Trend</h2>
               <p className="text-xs text-gray-400">Monthly breakdown — hover for details</p>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {[
                 { color: "bg-blue-400",   label: "Total Sales" },
                 { color: "bg-violet-500", label: "Output GST" },
@@ -369,41 +355,41 @@ export default function GSTOverview({values}) {
               ))}
             </div>
           </div>
-          <div className="h-64">
+          <div className="h-48 sm:h-64">
             <Bar data={mainChartData} options={mainOptions} />
           </div>
         </div>
 
         {/* ── Bottom row ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
 
           {/* Donut */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-            <div className="mb-4">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5">
+            <div className="mb-3 sm:mb-4">
               <h2 className="text-sm font-semibold text-gray-700">GST Composition</h2>
               <p className="text-xs text-gray-400">Latest period breakdown</p>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="relative h-40 w-40 flex-shrink-0">
+            <div className="flex items-center gap-4 sm:gap-6">
+              <div className="relative h-32 w-32 sm:h-40 sm:w-40 flex-shrink-0">
                 <Doughnut data={donutData} options={donutOptions} />
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                   <p className="text-xs text-gray-400">Total</p>
-                  <p className="text-sm font-bold text-gray-700 font-mono">{fmt(totalGST)}</p>
+                  <p className="text-xs sm:text-sm font-bold text-gray-700 font-mono">{fmt(totalGST)}</p>
                 </div>
               </div>
-              <div className="space-y-3 flex-1">
+              <div className="space-y-2 sm:space-y-3 flex-1 min-w-0">
                 {[
-                  { color: "bg-violet-500", label: "Output GST", val: latestOutput, pct: ((latestOutput/totalGST)*100).toFixed(1) },
-                  { color: "bg-teal-400",   label: "Input ITC",  val: latestITC,    pct: ((latestITC/totalGST)*100).toFixed(1) },
-                  { color: "bg-orange-400", label: "Net Payable", val: latestNet,   pct: ((latestNet/totalGST)*100).toFixed(1) },
+                  { color: "bg-violet-500", label: "Output GST",  val: latestOutput, pct: ((latestOutput / totalGST) * 100).toFixed(1) },
+                  { color: "bg-teal-400",   label: "Input ITC",   val: latestITC,    pct: ((latestITC / totalGST) * 100).toFixed(1) },
+                  { color: "bg-orange-400", label: "Net Payable", val: latestNet,    pct: ((latestNet / totalGST) * 100).toFixed(1) },
                 ].map(({ color, label, val, pct }) => (
                   <div key={label}>
                     <div className="flex justify-between text-xs text-gray-500 mb-1">
-                      <span className="flex items-center gap-1.5">
-                        <span className={`w-2 h-2 rounded-full ${color}`} />
-                        {label}
+                      <span className="flex items-center gap-1.5 truncate">
+                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${color}`} />
+                        <span className="truncate">{label}</span>
                       </span>
-                      <span className="font-semibold text-gray-700">{fmt(val)}</span>
+                      <span className="font-semibold text-gray-700 ml-1 flex-shrink-0">{fmt(val)}</span>
                     </div>
                     <div className="h-1 rounded-full bg-gray-100 overflow-hidden">
                       <div
@@ -418,29 +404,31 @@ export default function GSTOverview({values}) {
           </div>
 
           {/* ITC Utilization */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-            <div className="flex items-start justify-between mb-4">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5">
+            <div className="flex items-start justify-between mb-3 sm:mb-4">
               <div>
                 <h2 className="text-sm font-semibold text-gray-700">ITC Utilization Rate</h2>
                 <p className="text-xs text-gray-400">Input ITC as % of Output GST</p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-teal-500 font-mono">
+                <p className="text-lg sm:text-xl font-bold text-teal-500 font-mono">
                   {itcRates(data)[itcRates(data).length - 1]}%
                 </p>
                 <p className="text-xs text-gray-400">Latest</p>
               </div>
             </div>
-            <div className="h-40">
+            <div className="h-36 sm:h-40">
               <Line data={itcLineData} options={itcOptions} />
             </div>
           </div>
+
         </div>
 
         {/* ── Footer ── */}
         <p className="text-center text-xs text-gray-300 pb-2">
           © 2026 GST Assistant · All rights reserved
         </p>
+
       </div>
     </div>
   );

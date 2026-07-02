@@ -31,7 +31,6 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
   const businessData = useSelector((state) => state.business);
 
   const [form, setForm] = useState({
-   
     vendorName:      "",
     vendorGSTIN:     "",
     invoiceNumber:   "",
@@ -66,7 +65,6 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
   const sgst = transactionType === "intrastate" ? gstAmount / 2 : 0;
   const igst = transactionType === "interstate"  ? gstAmount     : 0;
 
- 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -75,9 +73,8 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
     if (!form.vendorName || !form.quantity || !form.unitPrice) return;
 
     const payload = {
-      
-      invoiceNumber:      form.invoiceNumber,
-      purchaseDate:        form.purchaseDate,
+      invoiceNumber:   form.invoiceNumber,
+      purchaseDate:    form.purchaseDate,
       month:           getMonthFromDate(form.purchaseDate),
       financialYear:   getFinancialYear(form.purchaseDate),
       vendorName:      form.vendorName,
@@ -102,18 +99,21 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
       paymentStatus:   form.paymentStatus,
       businessId:      businessData?._id,
     };
-    //console.log("Adding purchase bill with payload:", payload);
     onAdd(payload);
   };
 
+  // ── Input class helper ────────────────────────────────────────────────────
+  const inputCls = (border = "border-slate-200") =>
+    `w-full border ${border} rounded-lg px-3 sm:px-3.5 py-2 sm:py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`;
+
   // ─────────────────────────────────────────────────────────────────────────
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
 
-        {/* Header — untouched */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-          <h2 className="text-lg font-bold text-slate-800">Add New Purchase Bill</h2>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-100">
+          <h2 className="text-base sm:text-lg font-bold text-slate-800">Add New Purchase Bill</h2>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition"
@@ -123,9 +123,9 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5 space-y-4">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-3 sm:space-y-4">
 
-          {/* Vendor Name — untouched */}
+          {/* Vendor Name */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Vendor Name</label>
             <input
@@ -133,27 +133,25 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
               value={form.vendorName}
               onChange={handleChange}
               placeholder="XYZ Suppliers"
-              className="w-full border border-blue-400 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              className={inputCls("border-blue-400")}
             />
           </div>
 
-          {/* Vendor GSTIN — untouched */}
+          {/* Vendor GSTIN */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Vendor GSTIN</label>
             <input
               name="vendorGSTIN"
               value={form.vendorGSTIN}
-              onChange={(e) =>
-                setForm({ ...form, vendorGSTIN: e.target.value.toUpperCase() })
-              }
+              onChange={(e) => setForm({ ...form, vendorGSTIN: e.target.value.toUpperCase() })}
               placeholder="29ABCDE1234F1Z5"
               maxLength={15}
-              className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              className={inputCls()}
             />
           </div>
 
-          {/* Invoice Number + Purchase Date — untouched */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Invoice Number + Purchase Date */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Invoice Number</label>
               <input
@@ -161,7 +159,7 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
                 value={form.invoiceNumber}
                 onChange={handleChange}
                 placeholder="VINV-001"
-                className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className={inputCls()}
               />
             </div>
             <div>
@@ -171,20 +169,20 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
                 name="purchaseDate"
                 value={form.purchaseDate}
                 onChange={handleChange}
-                className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className={inputCls()}
               />
             </div>
           </div>
 
-          {/* ── NEW: Vendor State + Transaction Type badge ── */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Vendor State + Transaction Type badge */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Vendor State</label>
               <select
                 name="vendorState"
                 value={form.vendorState}
                 onChange={handleChange}
-                className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className={inputCls()}
               >
                 <option value="">Select state</option>
                 {INDIAN_STATES.map((s) => (
@@ -194,20 +192,22 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
             </div>
             <div className="flex flex-col justify-end pb-1">
               {transactionType && (
-                <div className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-sm font-medium border
+                <div className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium border
                   ${transactionType === "intrastate"
                     ? "bg-green-50 text-green-700 border-green-200"
                     : "bg-blue-50 text-blue-700 border-blue-200"}`}
                 >
                   <span>{transactionType === "intrastate" ? "🟢" : "🔵"}</span>
-                  {transactionType === "intrastate" ? "Intrastate — CGST + SGST" : "Interstate — IGST"}
+                  <span className="leading-tight">
+                    {transactionType === "intrastate" ? "Intrastate — CGST + SGST" : "Interstate — IGST"}
+                  </span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* ── NEW: Item Description + HSN Code ── */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Item Description + HSN Code */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Item Description</label>
               <input
@@ -215,7 +215,7 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
                 value={form.itemDescription}
                 onChange={handleChange}
                 placeholder="Raw Wood Material"
-                className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className={inputCls()}
               />
             </div>
             <div>
@@ -225,13 +225,13 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
                 value={form.hsnCode}
                 onChange={handleChange}
                 placeholder="4403"
-                className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className={inputCls()}
               />
             </div>
           </div>
 
-          {/* ── NEW: Quantity + Unit Price replacing totalAmount + GST Rate untouched ── */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Quantity + Unit Price */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Quantity</label>
               <input
@@ -241,7 +241,7 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
                 onChange={handleChange}
                 placeholder="20"
                 min="1"
-                className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className={inputCls()}
               />
             </div>
             <div>
@@ -253,19 +253,19 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
                 onChange={handleChange}
                 placeholder="250"
                 min="0"
-                className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className={inputCls()}
               />
             </div>
           </div>
 
-          {/* GST Rate — untouched styles */}
+          {/* GST Rate */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">GST Rate (%)</label>
             <select
               name="gstRate"
               value={form.gstRate}
               onChange={handleChange}
-              className="w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              className={inputCls()}
             >
               <option value={0}>0%</option>
               <option value={3}>3%</option>
@@ -276,9 +276,9 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
             </select>
           </div>
 
-          {/* ── NEW: Live Calculation Preview ── */}
+          {/* Live Calculation Preview */}
           {taxableAmount > 0 && (
-            <div className="bg-slate-50 rounded-lg p-4 space-y-2 text-sm border border-slate-100">
+            <div className="bg-slate-50 rounded-lg p-3 sm:p-4 space-y-2 text-sm border border-slate-100">
               <p className="font-medium text-slate-700 mb-2">Bill Summary</p>
               <div className="flex justify-between text-slate-600">
                 <span>Taxable Amount</span>
@@ -312,7 +312,6 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
                   ₹{totalAmount.toLocaleString("en-IN")}
                 </span>
               </div>
-              {/* ITC row — purchase bill exclusive */}
               <div className={`flex justify-between text-sm font-medium pt-1
                 ${form.itcEligible ? "text-green-700" : "text-red-500"}`}
               >
@@ -326,9 +325,9 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
             </div>
           )}
 
-          {/*NEW: ITC Eligibility Toggle*/}
-          <div className="flex items-start justify-between border border-slate-200 rounded-lg px-3.5 py-3">
-            <div>
+          {/* ITC Eligibility Toggle */}
+          <div className="flex items-start justify-between border border-slate-200 rounded-lg px-3 sm:px-3.5 py-3">
+            <div className="pr-4">
               <p className="text-sm font-medium text-slate-700">ITC Eligible</p>
               <p className="text-xs text-slate-400 mt-0.5">
                 Turn off for diesel, alcohol, or personal-use items
@@ -346,16 +345,16 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
             </button>
           </div>
 
-          {/*NEW: Payment Status*/}
+          {/* Payment Status */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Payment Status</label>
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               {["paid", "pending"].map((status) => (
                 <button
                   key={status}
                   type="button"
                   onClick={() => setForm({ ...form, paymentStatus: status })}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-medium border transition-all capitalize
+                  className={`flex-1 sm:flex-none px-4 py-2 sm:py-2.5 rounded-lg text-sm font-medium border transition-all capitalize
                     ${form.paymentStatus === status
                       ? status === "paid"
                         ? "bg-green-600 text-white border-green-600"
@@ -371,17 +370,17 @@ export default function AddPurchaseBill({ onAdd, onClose }) {
 
         </div>
 
-        {/* Footer — untouched */}
-        <div className="flex items-center gap-3 px-6 py-4 border-t border-slate-100">
+        {/* Footer */}
+        <div className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 border-t border-slate-100">
           <button
             onClick={handleSubmit}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg"
+            className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg"
           >
             Add Purchase
           </button>
           <button
             onClick={onClose}
-            className="text-slate-600 hover:text-slate-800 px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-100 transition"
+            className="flex-1 sm:flex-none text-center text-slate-600 hover:text-slate-800 px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-100 transition"
           >
             Cancel
           </button>

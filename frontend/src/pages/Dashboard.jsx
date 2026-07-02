@@ -30,13 +30,13 @@ export default function Dashboard() {
   //console.log("values", values);
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Main Content */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        <GSTOverview values={values}/>
-      </main>
-    </div>
-  );
+  <div className="flex h-screen bg-gray-100 overflow-hidden">
+    {/* Main Content */}
+    <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+      <GSTOverview values={values} />
+    </main>
+  </div>
+);
 }
 
 

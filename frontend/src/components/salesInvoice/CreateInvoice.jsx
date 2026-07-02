@@ -21,13 +21,7 @@ function getFinancialYear(dateStr) {
 function CreateInvoice({ isOpen, onClose, onAdd }) {
 
   const businessData = useSelector((state) => state.business);
-  //console.log("businessData from Redux:", businessData.businessData);
-
-  
-
-  // ── Safely extract business state — covers all common Redux shape patterns ──
   const businessState = businessData?.businessData?.state;
-  //console.log("Extracted businessState:", businessState);
 
   const [form, setForm] = useState({
     invoiceNumber:   "",
@@ -60,9 +54,6 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
   const igst = transactionType === "interstate"  ? gstAmount     : 0;
 
   if (!isOpen) return null;
-
-  //console.log("customerState →", form.customerState);
-  //console.log("transactionType →", transactionType);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -112,7 +103,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
       unitPrice:       "",
       paymentStatus:   "pending",
     });
-    console.log("Created invoice with payload:", payload);
+    //console.log("Created invoice with payload:", payload);
   };
 
   const INDIAN_STATES = [
@@ -123,26 +114,29 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
     "Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi",
     "Jammu & Kashmir","Ladakh","Puducherry","Chandigarh",
   ];
-  
+
+  // ── Shared input class ────────────────────────────────────────────────────
+  const inputCls = "w-full border rounded-lg px-3 py-2 mt-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white w-[600px] rounded-xl shadow-xl p-6 relative max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white w-full sm:w-[600px] rounded-xl shadow-xl p-4 sm:p-6 relative max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-gray-400 hover:text-gray-700"
+          className="absolute right-3 top-3 sm:right-4 sm:top-4 text-gray-400 hover:text-gray-700"
         >
           <X size={20} />
         </button>
 
         {/* Title */}
-        <h2 className="text-xl font-semibold mb-6">Create New Invoice</h2>
+        <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Create New Invoice</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
 
-          {/*  Row 1: Invoice Number + Date  */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Row 1: Invoice Number + Date */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="text-sm text-gray-600">Invoice Number</label>
               <input
@@ -151,7 +145,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 value={form.invoiceNumber}
                 onChange={handleChange}
                 placeholder="INV-001"
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
             <div>
@@ -161,13 +155,13 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 name="invoiceDate"
                 value={form.invoiceDate}
                 onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
           </div>
 
           {/* Row 2: Customer Name + GSTIN */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="text-sm text-gray-600">Customer Name</label>
               <input
@@ -176,7 +170,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 value={form.customerName}
                 onChange={handleChange}
                 placeholder="Raj Enterprises"
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
             <div>
@@ -193,20 +187,20 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 }
                 placeholder="27AABCR1234A1Z5"
                 maxLength={15}
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
           </div>
 
-          {/* Row 3: Customer State */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Row 3: Customer State + Transaction badge */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="text-sm text-gray-600">Customer State</label>
               <select
                 name="customerState"
                 value={form.customerState}
                 onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               >
                 <option value="">Select state</option>
                 {INDIAN_STATES.map((s) => (
@@ -214,23 +208,24 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 ))}
               </select>
             </div>
-            {/* Auto-derived transaction type badge */}
             <div className="flex flex-col justify-end pb-1">
               {transactionType && (
-                <div className={`mt-1 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border
+                <div className={`mt-1 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium border
                   ${transactionType === "intrastate"
                     ? "bg-green-50 text-green-700 border-green-200"
                     : "bg-blue-50 text-blue-700 border-blue-200"}`}
                 >
                   <span>{transactionType === "intrastate" ? "🟢" : "🔵"}</span>
-                  {transactionType === "intrastate" ? "Intrastate — CGST + SGST" : "Interstate — IGST"}
+                  <span className="leading-tight">
+                    {transactionType === "intrastate" ? "Intrastate — CGST + SGST" : "Interstate — IGST"}
+                  </span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Row 4: Item Description + HSN Code */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="text-sm text-gray-600">Item Description</label>
               <input
@@ -239,7 +234,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 value={form.itemDescription}
                 onChange={handleChange}
                 placeholder="Office Furniture"
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
             <div>
@@ -250,13 +245,13 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 value={form.hsnCode}
                 onChange={handleChange}
                 placeholder="9403"
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
           </div>
 
           {/* Row 5: Quantity + Unit Price + GST Rate */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 sm:gap-4">
             <div>
               <label className="text-sm text-gray-600">Quantity</label>
               <input
@@ -266,7 +261,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 onChange={handleChange}
                 placeholder="10"
                 min="1"
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
             <div>
@@ -278,7 +273,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 onChange={handleChange}
                 placeholder="800"
                 min="0"
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
             <div>
@@ -287,7 +282,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
                 name="gstRate"
                 value={form.gstRate}
                 onChange={handleChange}
-                className="w-full border rounded-lg px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputCls}
               >
                 <option value={0}>0%</option>
                 <option value={3}>3%</option>
@@ -301,7 +296,7 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
 
           {/* Live Calculation Preview */}
           {taxableAmount > 0 && (
-            <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm border">
+            <div className="bg-gray-50 rounded-lg p-3 sm:p-4 space-y-2 text-sm border">
               <p className="font-medium text-gray-700 mb-2">Invoice Summary</p>
               <div className="flex justify-between text-gray-600">
                 <span>Taxable Amount</span>
@@ -339,13 +334,13 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
           {/* Row 6: Payment Status */}
           <div>
             <label className="text-sm text-gray-600">Payment Status</label>
-            <div className="flex gap-3 mt-2">
+            <div className="flex gap-2 sm:gap-3 mt-2">
               {["paid", "pending"].map((status) => (
                 <button
                   key={status}
                   type="button"
                   onClick={() => setForm({ ...form, paymentStatus: status })}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors capitalize
+                  className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-medium border transition-colors capitalize
                     ${form.paymentStatus === status
                       ? status === "paid"
                         ? "bg-green-600 text-white border-green-600"
@@ -359,18 +354,18 @@ function CreateInvoice({ isOpen, onClose, onAdd }) {
             </div>
           </div>
 
-          {/* Buttons (original) */}
-          <div className="flex gap-3 pt-4">
+          {/* Buttons */}
+          <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4">
             <button
               type="submit"
-              className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+              className="flex-1 sm:flex-none bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium"
             >
               Create Invoice
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="border px-5 py-2 rounded-lg hover:bg-gray-100"
+              className="flex-1 sm:flex-none border px-5 py-2 rounded-lg hover:bg-gray-100 text-sm"
             >
               Cancel
             </button>

@@ -90,7 +90,7 @@ const createPurchase = asyncHandler(async (req, res) => {
     month: "2-digit",
     year:  "numeric",
   });
-
+ 
   //console.log(formattedDate); // your original log
 
   // ── Create ────────────────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ const createPurchase = asyncHandler(async (req, res) => {
     vendorGstin:   vendorGstin.toUpperCase(),
     gstRate:       gstRateNum,
     businessId,
-    purchaseDate:  formattedDate,
+    purchaseDate:  date,
     month:         getMonthFromDate(purchaseDate),
     financialYear: getFinancialYear(purchaseDate),
     vendorState,

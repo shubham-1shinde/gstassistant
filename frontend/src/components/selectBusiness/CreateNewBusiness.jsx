@@ -58,107 +58,127 @@ function CreateNewBusiness({ isOpen, onClose, onAdd }) {
   
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white w-full max-w-md rounded-xl shadow-2xl">
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-4">
+    <div className="bg-white w-full max-w-md rounded-xl shadow-2xl max-h-[92vh] overflow-y-auto">
 
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-800">Add New Business</h2>
-          <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition"
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100">
+        <h2 className="text-base sm:text-lg font-bold text-gray-800">
+          Add New Business
+        </h2>
+
+        <button
+          onClick={handleClose}
+          className="text-gray-400 hover:text-gray-600 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition flex-shrink-0"
+        >
+          <X size={18} />
+        </button>
+      </div>
+
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="px-4 sm:px-6 py-5 space-y-4"
+      >
+
+        {/* Business Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Business Name
+          </label>
+
+          <input
+            type="text"
+            name="businessName"
+            value={form.businessName}
+            onChange={handleChange}
+            placeholder="ABC Enterprises"
+            className={`w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
+              errors.businessName ? "border-red-400" : "border-gray-200"
+            }`}
+          />
+
+          {errors.businessName && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.businessName}
+            </p>
+          )}
+        </div>
+
+        {/* GSTIN */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            GSTIN
+          </label>
+
+          <input
+            type="text"
+            name="gstin"
+            value={form.gstin}
+            onChange={handleChange}
+            placeholder="27ABCDE1234F1Z5"
+            className={`w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-400 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
+              errors.gstin ? "border-red-400" : "border-gray-200"
+            }`}
+          />
+
+          {errors.gstin && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.gstin}
+            </p>
+          )}
+        </div>
+
+        {/* State */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            State
+          </label>
+
+          <select
+            name="state"
+            value={form.state}
+            onChange={handleChange}
+            className={`w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
+              errors.state ? "border-red-400" : "border-gray-200"
+            }`}
           >
-            <X size={18} />
+            <option value="">Select State</option>
+
+            {states.map((state) => (
+              <option key={state}>{state}</option>
+            ))}
+          </select>
+
+          {errors.state && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.state}
+            </p>
+          )}
+        </div>
+
+        {/* Buttons */}
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center gap-3 pt-2">
+          <button
+            type="button"
+            onClick={handleClose}
+            className="w-full sm:w-auto text-gray-600 hover:text-gray-800 px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-100 transition"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg"
+          >
+            Add Business
           </button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
-
-          {/* Business Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Business Name
-            </label>
-            <input
-              type="text"
-              name="businessName"
-              value={form.businessName}
-              onChange={handleChange}
-              placeholder="ABC Enterprises"
-              className={`w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-                errors.businessName ? "border-red-400" : "border-gray-200"
-              }`}
-            />
-            {errors.businessName && (
-              <p className="text-xs text-red-500 mt-1">{errors.businessName}</p>
-            )}
-          </div>
-
-          {/* GSTIN */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              GSTIN
-            </label>
-            <input
-              type="text"
-              name="gstin"
-              value={form.gstin}
-              onChange={handleChange}
-              placeholder="27ABCDE1234F1Z5"
-              className={`w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 placeholder-gray-400 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-                errors.gstin ? "border-red-400" : "border-gray-200"
-              }`}
-            />
-            {errors.gstin && (
-              <p className="text-xs text-red-500 mt-1">{errors.gstin}</p>
-            )}
-          </div>
-
-          {/* State */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              State
-            </label>
-            <select
-              name="state"
-              value={form.state}
-              onChange={handleChange}
-              className={`w-full border rounded-lg px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-                errors.state ? "border-red-400" : "border-gray-200"
-              }`}
-            >
-              <option value="">Select State</option>
-              {states.map((state) => (
-                <option key={state}>{state}</option>
-              ))}
-            </select>
-            {errors.state && (
-              <p className="text-xs text-red-500 mt-1">{errors.state}</p>
-            )}
-          </div>
-
-          {/* Buttons */}
-          <div className="flex items-center gap-3 pt-2">
-          <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg"
-            >
-              Add Business
-            </button>
-            <button
-              type="button"
-              onClick={handleClose}
-              className="text-gray-600 hover:text-gray-800 px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-100 transition"
-            >
-              Cancel
-            </button>
-          </div>
-
-        </form>
-      </div>
+      </form>
     </div>
-  );
+  </div>
+);
 }
 
 export default CreateNewBusiness;
