@@ -380,10 +380,9 @@ export default function TaxBot() {
 
         </div>
 
-        {/* Right Panel */}
+        {/* Right Panel 
         <div className="hidden md:block w-[300px] lg:w-[350px]">
-          {/* your right panel stays exactly same */}
-        </div>
+        </div> */}
 
       </div>
     </div>
