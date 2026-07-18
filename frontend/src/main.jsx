@@ -22,6 +22,7 @@ import RegisterAccountant from './pages/RegisterAccountant.jsx';
 import ListAccountant from './pages/ListAccountant.jsx';
 import ThankYouRegister from './pages/ThankYouRegister.jsx';
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const router = createBrowserRouter([
 
@@ -151,6 +152,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </Provider>
 
     <Analytics />
-    
+    <SpeedInsights />
+
   </React.StrictMode>,
 )
