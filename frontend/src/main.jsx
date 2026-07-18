@@ -21,6 +21,7 @@ import ContactAccountant from './pages/ContactAccountant.jsx';
 import RegisterAccountant from './pages/RegisterAccountant.jsx';
 import ListAccountant from './pages/ListAccountant.jsx';
 import ThankYouRegister from './pages/ThankYouRegister.jsx';
+import { Analytics } from "@vercel/analytics/react";
 
 const router = createBrowserRouter([
 
@@ -142,10 +143,14 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+
    <Provider store={store}>
       <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
         <RouterProvider router={router}/>
       </PersistGate>
     </Provider>
+
+    <Analytics />
+    
   </React.StrictMode>,
 )
